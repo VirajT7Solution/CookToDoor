@@ -1,0 +1,129 @@
+{
+  "examples": [
+    {
+      "name": "Vegetarian Menu Item - Dal Dhokli",
+      "data": {
+        "categoryId": 1,
+        "itemName": "Dal Dhokli",
+        "description": "Traditional Gujarati dal dhokli with ghee and spices",
+        "price": 120.50,
+        "ingredients": "Wheat flour, dal, ghee, turmeric, red chili, cumin, coriander",
+        "mealType": "VEG",
+        "isAvailable": true
+      }
+    },
+    {
+      "name": "Non-Vegetarian Menu Item - Butter Chicken",
+      "data": {
+        "categoryId": 1,
+        "itemName": "Butter Chicken",
+        "description": "Creamy butter chicken with aromatic spices",
+        "price": 250.00,
+        "ingredients": "Chicken, butter, cream, tomatoes, onions, garlic, ginger, garam masala",
+        "mealType": "NON_VEG",
+        "isAvailable": true
+      }
+    },
+    {
+      "name": "Jain Menu Item - Jain Thali",
+      "data": {
+        "categoryId": 2,
+        "itemName": "Jain Thali",
+        "description": "Complete Jain meal without root vegetables",
+        "price": 180.00,
+        "ingredients": "Roti, dal, sabzi (no onion/garlic), rice, papad, pickle",
+        "mealType": "JAIN",
+        "isAvailable": true
+      }
+    },
+    {
+      "name": "Vegetarian - Gujarati Thali",
+      "data": {
+        "categoryId": 1,
+        "itemName": "Gujarati Thali",
+        "description": "Complete Gujarati meal with dal, sabzi, roti, rice, and sweet",
+        "price": 150.00,
+        "ingredients": "Dal, vegetables, wheat flour, rice, ghee, spices, jaggery",
+        "mealType": "VEG",
+        "isAvailable": true
+      }
+    },
+    {
+      "name": "Non-Vegetarian - Chicken Biryani",
+      "data": {
+        "categoryId": 1,
+        "itemName": "Chicken Biryani",
+        "description": "Aromatic basmati rice with tender chicken pieces",
+        "price": 280.00,
+        "ingredients": "Basmati rice, chicken, onions, tomatoes, yogurt, biryani masala, saffron",
+        "mealType": "NON_VEG",
+        "isAvailable": true
+      }
+    },
+    {
+      "name": "Jain - Jain Khichdi",
+      "data": {
+        "categoryId": 2,
+        "itemName": "Jain Khichdi",
+        "description": "Simple and nutritious khichdi without onion and garlic",
+        "price": 100.00,
+        "ingredients": "Rice, moong dal, ghee, turmeric, cumin, salt",
+        "mealType": "JAIN",
+        "isAvailable": true
+      }
+    },
+    {
+      "name": "Vegetarian - Paneer Tikka",
+      "data": {
+        "categoryId": 1,
+        "itemName": "Paneer Tikka",
+        "description": "Grilled paneer cubes marinated in spices",
+        "price": 200.00,
+        "ingredients": "Paneer, yogurt, spices, bell peppers, onions, lemon",
+        "mealType": "VEG",
+        "isAvailable": true
+      }
+    },
+    {
+      "name": "Non-Vegetarian - Mutton Curry",
+      "data": {
+        "categoryId": 1,
+        "itemName": "Mutton Curry",
+        "description": "Tender mutton cooked in rich curry",
+        "price": 320.00,
+        "ingredients": "Mutton, onions, tomatoes, ginger, garlic, spices, oil",
+        "mealType": "NON_VEG",
+        "isAvailable": true
+      }
+    }
+  ],
+  "instructions": {
+    "endpoint": "POST http://localhost:8080/api/providers/menu-items",
+    "headers": {
+      "Authorization": "Bearer YOUR_TOKEN_HERE"
+    },
+    "body": {
+      "type": "form-data",
+      "fields": [
+        {
+          "key": "data",
+          "type": "Text",
+          "value": "Copy the 'data' object from any example above as JSON string"
+        },
+        {
+          "key": "image",
+          "type": "File",
+          "value": "Optional - select an image file"
+        }
+      ]
+    },
+    "notes": [
+      "Replace categoryId with an actual category ID from your database",
+      "MealType must be exactly: VEG, NON_VEG, or JAIN",
+      "Price should be a number (e.g., 120.50)",
+      "Image is optional - you can add it later",
+      "Make sure you're logged in as a PROVIDER user"
+    ]
+  }
+}
+
