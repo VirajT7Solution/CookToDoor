@@ -1,4 +1,4 @@
-# Java 21 Installation Guide for PlateMate Backend
+# Java 21 Installation Guide for CookToDoor Backend
 
 ## Current Status
 - ❌ Java 21 is **NOT** installed on your system
@@ -91,7 +91,7 @@ After Java 21 is installed and configured:
 1. Right-click project → **Maven → Update Project**
 2. Right-click project → **Maven → Clean**
 3. Right-click project → **Maven → Install**
-4. Run the application: Right-click `PlateMateApplication.java` → **Run As → Spring Boot App**
+4. Run the application: Right-click `CookToDoorApplication.java` → **Run As → Spring Boot App**
 
 ## Troubleshooting
 

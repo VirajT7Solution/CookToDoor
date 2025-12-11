@@ -76,7 +76,7 @@ export default function Dashboard() {
           Dashboard Overview
         </h1>
         <p className="text-sm text-slate-600">
-          Live statistics from PlateMate admin system
+          Live statistics from CookToDoor admin system
         </p>
       </div>
 

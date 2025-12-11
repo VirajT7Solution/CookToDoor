@@ -1,4 +1,4 @@
-# PlateMate Delivery Partner Flow - Complete Guide & Postman Testing
+# CookToDoor Delivery Partner Flow - Complete Guide & Postman Testing
 
 ## Table of Contents
 
@@ -350,7 +350,7 @@ Authorization: Bearer {admin_token}
 
 1. **Postman Environment Setup**
 
-   - Create environment: "PlateMate Local"
+   - Create environment: "CookToDoor Local"
    - Variables:
      - `base_url`: `http://localhost:9090`
      - `admin_token`: (set after admin login)

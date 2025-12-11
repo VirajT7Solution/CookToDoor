@@ -2,19 +2,19 @@
 import { create } from "zustand";
 
 export const useAuthStore = create((set) => ({
-  token: localStorage.getItem("platemate_token") || null,
-  refreshToken: localStorage.getItem("platemate_refreshToken") || null,
-  username: localStorage.getItem("platemate_username") || "",
-  role: localStorage.getItem("platemate_role") || "",
+  token: localStorage.getItem("cooktodor_token") || null,
+  refreshToken: localStorage.getItem("cooktodor_refreshToken") || null,
+  username: localStorage.getItem("cooktodor_username") || "",
+  role: localStorage.getItem("cooktodor_role") || "",
   
-  isAuthenticated: !!localStorage.getItem("platemate_token"),
+  isAuthenticated: !!localStorage.getItem("cooktodor_token"),
 
   login: ({ token, refreshToken, username, role }) =>
     set(() => {
-      localStorage.setItem("platemate_token", token);
-      localStorage.setItem("platemate_refreshToken", refreshToken);
-      localStorage.setItem("platemate_username", username);
-      localStorage.setItem("platemate_role", role);
+      localStorage.setItem("cooktodor_token", token);
+      localStorage.setItem("cooktodor_refreshToken", refreshToken);
+      localStorage.setItem("cooktodor_username", username);
+      localStorage.setItem("cooktodor_role", role);
 
       return {
         token,
@@ -27,10 +27,10 @@ export const useAuthStore = create((set) => ({
 
   logout: () =>
     set(() => {
-      localStorage.removeItem("platemate_token");
-      localStorage.removeItem("platemate_refreshToken");
-      localStorage.removeItem("platemate_username");
-      localStorage.removeItem("platemate_role");
+      localStorage.removeItem("cooktodor_token");
+      localStorage.removeItem("cooktodor_refreshToken");
+      localStorage.removeItem("cooktodor_username");
+      localStorage.removeItem("cooktodor_role");
 
       return {
         token: null,

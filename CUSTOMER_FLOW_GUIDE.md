@@ -1,4 +1,4 @@
-# PlateMate Customer Flow - Complete Guide & Postman Testing
+# CookToDoor Customer Flow - Complete Guide & Postman Testing
 
 ## Table of Contents
 
@@ -664,7 +664,7 @@ CANCELLED (can cancel at PENDING or CONFIRMED)
 
 1. **Postman Environment Setup**
 
-   - Create environment: "PlateMate Local"
+   - Create environment: "CookToDoor Local"
    - Variables:
      - `base_url`: `http://localhost:9090`
      - `customer_token`: (set after customer login)

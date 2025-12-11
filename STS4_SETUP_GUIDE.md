@@ -1,9 +1,9 @@
-# Spring Tool Suite 4 (STS4) Setup Guide for PlateMate Backend
+# Spring Tool Suite 4 (STS4) Setup Guide for CookToDoor Backend
 
 ## Prerequisites Checklist
 - [ ] Java 21 JDK installed (see SETUP_JAVA21.md)
 - [ ] PostgreSQL database running on localhost:5432
-- [ ] Database `platemate` created (or will be auto-created)
+- [ ] Database `CookToDoor` created (or will be auto-created)
 - [ ] Spring Tool Suite 4 installed
 
 ## Step 1: Import Project into STS4
@@ -14,7 +14,7 @@
 4. Select **Existing Maven Projects**
 5. Click **Next**
 6. Click **Browse...** next to "Root Directory"
-7. Navigate to: `C:\Users\AASHISH\OneDrive\Desktop\viraj222\platemate-backend`
+7. Navigate to: `C:\Users\AASHISH\OneDrive\Desktop\viraj222\CookToDoor-backend`
 8. Click **Select Folder**
 9. Ensure `pom.xml` is checked in the Projects list
 10. Click **Finish**
@@ -44,7 +44,7 @@
 
 ## Step 3: Configure Project Java Version
 
-1. In Project Explorer, right-click **PlateMate** project
+1. In Project Explorer, right-click **CookToDoor** project
 2. Select **Properties**
 3. Go to **Java Build Path** → **Libraries** tab
 4. Expand **Modulepath** or **Classpath**
@@ -61,7 +61,7 @@
 
 ## Step 4: Update Maven Project
 
-1. Right-click **PlateMate** project
+1. Right-click **CookToDoor** project
 2. Select **Maven → Update Project...** (or press Alt+F5)
 3. In the dialog:
    - ✅ Check **Force Update of Snapshots/Releases**
@@ -72,14 +72,14 @@
 
 ## Step 5: Clean Project
 
-1. Right-click **PlateMate** project
+1. Right-click **CookToDoor** project
 2. Select **Maven → Clean**
 3. Watch Console view for output
 4. Wait for "BUILD SUCCESS" message
 
 ## Step 6: Build/Compile Project
 
-1. Right-click **PlateMate** project
+1. Right-click **CookToDoor** project
 2. Select **Maven → Install** (compiles and packages)
    - OR: **Maven → Compile** (just compiles)
 3. Watch Console view for build progress
@@ -93,11 +93,11 @@
 
 ## Step 7: Verify Build Output
 
-1. In Project Explorer, expand **PlateMate** project
+1. In Project Explorer, expand **CookToDoor** project
 2. Expand **target** folder
 3. Expand **classes** folder
-4. Navigate to **com/platemate/**
-5. Verify **PlateMateApplication.class** file exists
+4. Navigate to **com/CookToDoor/**
+5. Verify **CookToDoorApplication.class** file exists
 6. If missing: Build failed, check console errors
 
 ## Step 8: Configure Database Connection
@@ -105,25 +105,25 @@
 1. Open `src/main/resources/application.properties`
 2. Verify database settings:
    ```
-   spring.datasource.url=jdbc:postgresql://localhost:5432/platemate
+   spring.datasource.url=jdbc:postgresql://localhost:5432/CookToDoor
    spring.datasource.username=postgres
    spring.datasource.password=aa@123
    ```
 3. Ensure PostgreSQL is running
-4. Ensure database `platemate` exists (or will be auto-created)
+4. Ensure database `CookToDoor` exists (or will be auto-created)
 
 ## Step 9: Run the Application
 
 ### Method 1: Run as Spring Boot App (Recommended)
-1. Navigate to: `src/main/java/com/platemate/PlateMateApplication.java`
+1. Navigate to: `src/main/java/com/CookToDoor/CookToDoorApplication.java`
 2. Right-click the file
 3. Select **Run As → Spring Boot App**
 4. Watch Console for startup messages
-5. Look for: `Started PlateMateApplication in X.XXX seconds`
+5. Look for: `Started CookToDoorApplication in X.XXX seconds`
 6. Application will be available at: `http://localhost:8080`
 
 ### Method 2: Run via Maven Goal
-1. Right-click **PlateMate** project
+1. Right-click **CookToDoor** project
 2. Select **Run As → Maven Build...**
 3. In "Goals" field, enter: `spring-boot:run`
 4. Click **Run**
@@ -135,13 +135,13 @@
    - Expand **Spring Boot**
    - Select **Spring Boot Dashboard**
    - Click **Open**
-2. Find **PlateMate** in the dashboard
+2. Find **CookToDoor** in the dashboard
 3. Right-click → **Run** (or click play button)
 
 ## Step 10: Verify Application Started
 
 Check Console output for:
-- ✅ `Started PlateMateApplication`
+- ✅ `Started CookToDoorApplication`
 - ✅ `Tomcat started on port(s): 8080`
 - ✅ No error messages about database connection
 
@@ -165,8 +165,8 @@ Check Console output for:
 **Solution:**
 1. Ensure PostgreSQL service is running
 2. Verify database credentials in `application.properties`
-3. Check if database `platemate` exists
-4. Test connection: `psql -U postgres -d platemate`
+3. Check if database `CookToDoor` exists
+4. Test connection: `psql -U postgres -d CookToDoor`
 
 ### Issue: Maven menu not visible
 **Solution:**
@@ -186,16 +186,16 @@ Check Console output for:
 - **Update Maven Project**: Right-click project → **Maven → Update Project** (Alt+F5)
 - **Clean**: Right-click project → **Maven → Clean**
 - **Build**: Right-click project → **Maven → Install**
-- **Run**: Right-click `PlateMateApplication.java` → **Run As → Spring Boot App**
+- **Run**: Right-click `CookToDoorApplication.java` → **Run As → Spring Boot App**
 - **Refresh**: Right-click project → **Refresh** (F5)
 
 ## Project Structure
 ```
-platemate-backend/
+CookToDoor-backend/
 ├── src/
 │   ├── main/
-│   │   ├── java/com/platemate/
-│   │   │   └── PlateMateApplication.java  ← Main class
+│   │   ├── java/com/CookToDoor/
+│   │   │   └── CookToDoorApplication.java  ← Main class
 │   │   └── resources/
 │   │       └── application.properties     ← Database config
 │   └── test/
@@ -209,8 +209,8 @@ platemate-backend/
 
 ✅ Project shows Maven icon in Project Explorer  
 ✅ Java 21 configured in project properties  
-✅ `target/classes/com/platemate/PlateMateApplication.class` exists  
+✅ `target/classes/com/CookToDoor/CookToDoorApplication.class` exists  
 ✅ Console shows "BUILD SUCCESS"  
 ✅ Application starts without errors  
-✅ Console shows "Started PlateMateApplication"  
+✅ Console shows "Started CookToDoorApplication"  
 

@@ -1,5 +1,5 @@
 ---
-name: PlateMate Full Stack Documentation
+name: CookToDoor Full Stack Documentation
 overview: "Create comprehensive project documentation following the user's specified format covering all 10 sections: Introduction, System Analysis, Requirements, System Design, Development, Modules Description, Implementation, Testing, Conclusion, and References. The documentation will cover the full stack: Android application, Spring Boot backend, and React admin panel."
 todos:
   - id: analyze_structure
@@ -62,17 +62,17 @@ todos:
       - write_sections_9_10
 ---
 
-# PlateMate Full Stack Project Documentation
+# CookToDoor Full Stack Project Documentation
 
 ## Overview
 
-This plan will create comprehensive documentation for the PlateMate food delivery platform covering Android app, Spring Boot backend, and React admin panel following the specified 10-section format.
+This plan will create comprehensive documentation for the CookToDoor food delivery platform covering Android app, Spring Boot backend, and React admin panel following the specified 10-section format.
 
 ## Documentation Structure
 
 ### 1. Introduction
 
-- **Project Overview**: PlateMate is a home-made food delivery system connecting customers, tiffin providers, delivery partners, and administrators
+- **Project Overview**: CookToDoor is a home-made food delivery system connecting customers, tiffin providers, delivery partners, and administrators
 - **Objectives**: Enable food ordering, provider management, delivery coordination, and platform administration
 - **Scope**: Full-stack application with mobile app, REST API backend, and web admin panel
 - **Technologies Used**: 
@@ -158,14 +158,14 @@ This plan will create comprehensive documentation for the PlateMate food deliver
 
 ### Backend
 
-- `src/main/java/com/platemate/model/*.java` - All entity models
-- `src/main/java/com/platemate/controller/*.java` - REST controllers
+- `src/main/java/com/CookToDoor/model/*.java` - All entity models
+- `src/main/java/com/CookToDoor/controller/*.java` - REST controllers
 - `src/main/resources/application.properties` - Configuration
 - Flow guides: `CUSTOMER_FLOW_GUIDE.md`, `PROVIDER_FLOW_GUIDE.md`, `DELIVERY_PARTNER_FLOW_GUIDE.md`
 
 ### Android
 
-- `app/src/main/java/com/example/platemate/*.java` - All activities and models
+- `app/src/main/java/com/example/CookToDoor/*.java` - All activities and models
 - `app/src/main/res/layout/*.xml` - All UI layouts
 - `app/src/main/AndroidManifest.xml` - App configuration
 

@@ -49,7 +49,7 @@ After applying fixes, test the endpoint to ensure it returns 200 OK with user li
 
 ## Files to Modify
 
-1. **`src/main/java/com/platemate/model/User.java`**
+1. **`src/main/java/com/CookToDoor/model/User.java`**
 
 - Add `@JsonIgnore` to UserDetails methods
 - Add `@JsonIgnore` to address getter

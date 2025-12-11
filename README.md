@@ -1,6 +1,6 @@
-# PlateMate Backend
+# CookToDoor Backend
 
-Spring Boot backend application for the PlateMate food delivery system.
+Spring Boot backend application for the CookToDoor food delivery system.
 
 ## Prerequisites
 
@@ -33,28 +33,28 @@ Follow the complete guide: [STS4_SETUP_GUIDE.md](./STS4_SETUP_GUIDE.md)
 2. **Configure Java 21**: Window → Preferences → Java → Installed JREs
 3. **Update Maven**: Right-click project → Maven → Update Project
 4. **Build**: Right-click project → Maven → Install
-5. **Run**: Right-click `PlateMateApplication.java` → Run As → Spring Boot App
+5. **Run**: Right-click `CookToDoorApplication.java` → Run As → Spring Boot App
 
 ## Database Configuration
 
 The application is configured to use PostgreSQL. Update `src/main/resources/application.properties`:
 
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/platemate
+spring.datasource.url=jdbc:postgresql://localhost:5432/CookToDoor
 spring.datasource.username=postgres
 spring.datasource.password=aa@123
 ```
 
-**Note**: Ensure PostgreSQL is running and the `platemate` database exists (or will be auto-created with `ddl-auto=update`).
+**Note**: Ensure PostgreSQL is running and the `CookToDoor` database exists (or will be auto-created with `ddl-auto=update`).
 
 ## Project Structure
 
 ```
-platemate-backend/
+CookToDoor-backend/
 ├── src/
 │   ├── main/
-│   │   ├── java/com/platemate/
-│   │   │   ├── PlateMateApplication.java    # Main application class
+│   │   ├── java/com/CookToDoor/
+│   │   │   ├── CookToDoorApplication.java    # Main application class
 │   │   │   ├── controller/                  # REST controllers
 │   │   │   ├── service/                     # Business logic
 │   │   │   ├── repository/                  # Data access layer
@@ -90,13 +90,13 @@ platemate-backend/
 
 - **Clean**: Right-click project → Maven → Clean
 - **Build**: Right-click project → Maven → Install
-- **Run**: Right-click `PlateMateApplication.java` → Run As → Spring Boot App
+- **Run**: Right-click `CookToDoorApplication.java` → Run As → Spring Boot App
 
 ## Running the Application
 
 ### Method 1: STS4 (Recommended)
 
-1. Right-click `src/main/java/com/platemate/PlateMateApplication.java`
+1. Right-click `src/main/java/com/CookToDoor/CookToDoorApplication.java`
 2. Select **Run As → Spring Boot App**
 
 ### Method 2: Maven Goal
@@ -150,7 +150,7 @@ The application provides REST APIs for:
 ### "Could not find or load main class"
 
 1. Build the project: **Maven → Install**
-2. Verify `target/classes/com/platemate/PlateMateApplication.class` exists
+2. Verify `target/classes/com/CookToDoor/CookToDoorApplication.class` exists
 3. Refresh project: Right-click → **Refresh** (F5)
 
 ### "release version 21 not supported"
@@ -163,7 +163,7 @@ The application provides REST APIs for:
 
 1. Ensure PostgreSQL is running
 2. Verify database credentials in `application.properties`
-3. Check if database `platemate` exists
+3. Check if database `CookToDoor` exists
 
 ### Maven dependencies not downloading
 
@@ -194,7 +194,7 @@ Edit `pom.xml` and add dependencies in the `<dependencies>` section.
 
 ### Database Changes
 
-1. Modify entity classes in `src/main/java/com/platemate/model/`
+1. Modify entity classes in `src/main/java/com/CookToDoor/model/`
 2. With `ddl-auto=update`, tables will be auto-updated on startup
 3. For production, use migrations (Flyway/Liquibase)
 

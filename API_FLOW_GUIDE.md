@@ -1,4 +1,4 @@
-# PlateMate Backend - Complete API Flow & Testing Guide
+# CookToDoor Backend - Complete API Flow & Testing Guide
 
 ## Table of Contents
 
@@ -15,7 +15,7 @@
 
 ### Overview
 
-PlateMate is a **food delivery platform** (like Swiggy/Zomato) with the following entities:
+CookToDoor is a **food delivery platform** (like Swiggy/Zomato) with the following entities:
 
 ```
 ┌─────────────┐
@@ -105,7 +105,7 @@ ROLE_ADMIN           // Platform administrators
 POST /api/auth/signup
 Body: {
   "username": "admin",
-  "email": "admin@platemate.com",
+  "email": "admin@CookToDoor.com",
   "password": "password123",
   "role": "ROLE_ADMIN"  // or ROLE_CUSTOMER, ROLE_PROVIDER, DELIVERY_PARTNER
 }
@@ -336,7 +336,7 @@ http://localhost:9090
 1. **Create Environment**
 
    - Click "Environments" → "Create Environment"
-   - Name: "PlateMate Local"
+   - Name: "CookToDoor Local"
    - Add variables:
      - `base_url`: `http://localhost:9090`
      - `token`: (leave empty, will be set after login)
@@ -357,7 +357,7 @@ Content-Type: application/json
 
 {
   "username": "admin",
-  "email": "admin@platemate.com",
+  "email": "admin@CookToDoor.com",
   "password": "admin123",
   "role": "ROLE_ADMIN"
 }

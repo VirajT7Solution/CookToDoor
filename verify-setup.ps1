@@ -1,8 +1,8 @@
-# PlateMate Backend Setup Verification Script
+# CookToDoor Backend Setup Verification Script
 # Run this script after installing Java 21 to verify your setup
 
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "PlateMate Backend Setup Verification" -ForegroundColor Cyan
+Write-Host "CookToDoor Backend Setup Verification" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
@@ -60,7 +60,7 @@ $projectRoot = $PSScriptRoot
 $requiredFiles = @(
     "pom.xml",
     "mvnw.cmd",
-    "src\main\java\com\platemate\PlateMateApplication.java",
+    "src\main\java\com\CookToDoor\CookToDoorApplication.java",
     "src\main\resources\application.properties"
 )
 
@@ -79,10 +79,10 @@ Write-Host ""
 
 # Check if compiled classes exist
 Write-Host "4. Checking for compiled classes..." -ForegroundColor Yellow
-$classFile = Join-Path $projectRoot "target\classes\com\platemate\PlateMateApplication.class"
+$classFile = Join-Path $projectRoot "target\classes\com\CookToDoor\CookToDoorApplication.class"
 if (Test-Path $classFile) {
     Write-Host "   ✓ Project has been compiled" -ForegroundColor Green
-    Write-Host "   Found: PlateMateApplication.class" -ForegroundColor Gray
+    Write-Host "   Found: CookToDoorApplication.class" -ForegroundColor Gray
 } else {
     Write-Host "   ⚠ Project has not been compiled yet" -ForegroundColor Yellow
     Write-Host "   Run: Maven → Install in STS4" -ForegroundColor Gray
@@ -116,7 +116,7 @@ if ($allGood) {
     Write-Host "2. Configure Java 21 in STS4 (Window → Preferences → Java → Installed JREs)" -ForegroundColor White
     Write-Host "3. Update Maven project (Right-click → Maven → Update Project)" -ForegroundColor White
     Write-Host "4. Build project (Right-click → Maven → Install)" -ForegroundColor White
-    Write-Host "5. Run application (Right-click PlateMateApplication.java → Run As → Spring Boot App)" -ForegroundColor White
+    Write-Host "5. Run application (Right-click CookToDoorApplication.java → Run As → Spring Boot App)" -ForegroundColor White
 } else {
     Write-Host "⚠ Some issues found. Please fix them before proceeding." -ForegroundColor Yellow
     Write-Host ""

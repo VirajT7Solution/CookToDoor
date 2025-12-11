@@ -8,7 +8,7 @@ const axiosClient = axios.create({
 
 // Attach token on every request
 axiosClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem("platemate_token");
+  const token = localStorage.getItem("cooktodor_token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

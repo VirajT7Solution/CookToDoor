@@ -8,10 +8,10 @@
 		<version>3.5.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.platemate</groupId>
-	<artifactId>PlateMate</artifactId>
+	<groupId>com.cooktodor</groupId>
+	<artifactId>CookToDoor</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>PlateMate</name>
+	<name>CookToDoor</name>
 	<description>Home Made Food Delivery System</description>
 	<url/>
 	<licenses>

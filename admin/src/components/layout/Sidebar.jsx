@@ -17,7 +17,7 @@
 //   return (
 //     <aside className="w-64 bg-slate-900 text-slate-100 flex flex-col">
 //       <div className="px-4 py-4 text-lg font-semibold border-b border-slate-800">
-//         PlateMate Admin
+//         CookToDoor Admin
 //       </div>
 
 //       <nav className="flex-1 px-2 py-4 space-y-1">
@@ -95,11 +95,11 @@ export default function Sidebar({ activeKey, onChange }) {
           <div className="flex items-center gap-3">
             <img
               src={logoImage}
-              alt="PlateMate Logo"
+              alt="CookToDoor Logo"
               className="h-10 w-auto object-contain"
             />
             <div className="flex flex-col">
-              <div className="text-lg font-bold text-white">PlateMate</div>
+              <div className="text-lg font-bold text-white">CookToDoor</div>
               <div className="text-xs text-slate-400">Admin Panel</div>
             </div>
           </div>
@@ -147,7 +147,7 @@ export default function Sidebar({ activeKey, onChange }) {
 
         {/* Footer / Version */}
         <div className="px-4 py-3 text-xs text-slate-500 border-t border-slate-800">
-          © {new Date().getFullYear()} PlateMate Admin
+          © {new Date().getFullYear()} CookToDoor Admin
         </div>
       </aside>
     </>

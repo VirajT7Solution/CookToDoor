@@ -1,4 +1,4 @@
-# PlateMate Admin Flow - Complete Guide & Postman Testing
+# CookToDoor Admin Flow - Complete Guide & Postman Testing
 
 ## Table of Contents
 
@@ -73,7 +73,7 @@ An **Admin** is a platform administrator who:
 ```json
 {
   "username": "admin",
-  "email": "admin@platemate.com",
+  "email": "admin@CookToDoor.com",
   "password": "admin123",
   "role": "ROLE_ADMIN"
 }
@@ -133,7 +133,7 @@ An **Admin** is a platform administrator who:
   {
     "id": 1,
     "username": "admin",
-    "email": "admin@platemate.com",
+    "email": "admin@CookToDoor.com",
     "role": "ROLE_ADMIN"
   },
   {
@@ -815,7 +815,7 @@ An **Admin** is a platform administrator who:
 ### Prerequisites
 
 1. **Postman Environment Setup**
-   - Create environment: "PlateMate Local"
+   - Create environment: "CookToDoor Local"
    - Variables:
      - `base_url`: `http://localhost:9090`
      - `admin_token`: (set after admin login)
@@ -845,7 +845,7 @@ Content-Type: application/json
 
 {
   "username": "admin",
-  "email": "admin@platemate.com",
+  "email": "admin@CookToDoor.com",
   "password": "admin123",
   "role": "ROLE_ADMIN"
 }
@@ -901,7 +901,7 @@ Authorization: Bearer {{admin_token}}
   {
     "id": 1,
     "username": "admin",
-    "email": "admin@platemate.com",
+    "email": "admin@CookToDoor.com",
     "role": "ROLE_ADMIN"
   }
 ]

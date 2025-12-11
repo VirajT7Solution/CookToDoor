@@ -15,7 +15,7 @@ export default function Topbar({ title }) {
       <div className="flex items-center gap-3">
         <img
           src={logoImage}
-          alt="PlateMate Logo"
+          alt="CookToDoor Logo"
           className="h-8 w-auto object-contain hidden md:block"
         />
         <h2 className="text-lg font-semibold text-slate-800">{title}</h2>

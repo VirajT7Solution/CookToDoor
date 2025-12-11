@@ -51,11 +51,11 @@ export default function Login() {
         <div className="flex flex-col items-center mb-6">
           <img
             src={logoImage}
-            alt="PlateMate Logo"
+            alt="CookToDoor Logo"
             className="h-16 w-auto object-contain mb-4"
           />
           <h1 className="text-2xl font-semibold text-slate-900 mb-1">
-            PlateMate Admin
+            CookToDoor Admin
           </h1>
           <p className="text-sm text-slate-500">
             Sign in to manage users, providers, orders & payouts.

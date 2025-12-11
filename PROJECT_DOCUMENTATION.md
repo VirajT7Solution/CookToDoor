@@ -1,4 +1,4 @@
-# PlateMate - Home Made Food Delivery System
+# CookToDoor - Home Made Food Delivery System
 
 ## Project Documentation
 
@@ -8,7 +8,7 @@
 
 ### 1.1 Project Overview
 
-**PlateMate** is a comprehensive home-made food delivery system designed to connect customers with local food providers (tiffin providers) and delivery partners. The platform facilitates the entire food delivery ecosystem, from menu browsing and order placement to payment processing and delivery tracking.
+**CookToDoor** is a comprehensive home-made food delivery system designed to connect customers with local food providers (tiffin providers) and delivery partners. The platform facilitates the entire food delivery ecosystem, from menu browsing and order placement to payment processing and delivery tracking.
 
 The system consists of three main components:
 
@@ -16,11 +16,11 @@ The system consists of three main components:
 - **Android Mobile Application**: A native Android app that provides an intuitive interface for customers, providers, and delivery partners
 - **Admin Web Panel**: A web-based administrative interface for managing users, providers, orders, and system configurations
 
-PlateMate addresses the growing demand for home-cooked, authentic food delivery services by creating a seamless platform where local food providers can showcase their offerings, customers can discover and order meals, and delivery partners can efficiently manage deliveries.
+CookToDoor addresses the growing demand for home-cooked, authentic food delivery services by creating a seamless platform where local food providers can showcase their offerings, customers can discover and order meals, and delivery partners can efficiently manage deliveries.
 
 ### 1.2 Objectives
 
-The primary objectives of the PlateMate project are:
+The primary objectives of the CookToDoor project are:
 
 1. **Connect Local Food Providers with Customers**: Enable home-based food businesses (tiffin providers) to reach a wider customer base through a digital platform
 
@@ -40,7 +40,7 @@ The primary objectives of the PlateMate project are:
 
 ### 1.3 Scope
 
-The scope of the PlateMate project encompasses:
+The scope of the CookToDoor project encompasses:
 
 #### Functional Scope:
 
@@ -154,7 +154,7 @@ The current food delivery ecosystem is dominated by large-scale platforms that p
 
 ### 2.2 Proposed System
 
-**PlateMate** is a specialized food delivery platform designed specifically for home-made food businesses, addressing the unique needs of tiffin providers, home chefs, and customers seeking authentic home-cooked meals.
+**CookToDoor** is a specialized food delivery platform designed specifically for home-made food businesses, addressing the unique needs of tiffin providers, home chefs, and customers seeking authentic home-cooked meals.
 
 #### Key Features of Proposed System:
 
@@ -297,7 +297,7 @@ The food delivery market lacks a specialized platform that effectively serves ho
 
 #### Solution Approach:
 
-PlateMate addresses these problems by providing:
+CookToDoor addresses these problems by providing:
 
 1. **Specialized Platform**: A dedicated platform designed specifically for home-based food providers with lower barriers to entry
 2. **Automated Order Management**: Digital order processing, tracking, and management system
@@ -540,7 +540,7 @@ The proposed system creates a win-win ecosystem where home-based providers can g
 
 **Database Configuration:**
 
-- **Database Name**: platemate (configurable)
+- **Database Name**: CookToDoor (configurable)
 - **Port**: 5432 (default)
 - **User**: postgres (default, configurable)
 - **Password**: Configurable in application.properties
@@ -633,7 +633,7 @@ The proposed system creates a win-win ecosystem where home-based providers can g
 
 ### 4.1 System Architecture
 
-The PlateMate system follows a **three-tier architecture** with clear separation of concerns, ensuring scalability, maintainability, and security. The architecture consists of Presentation Layer, Application Layer, and Data Layer.
+The CookToDoor system follows a **three-tier architecture** with clear separation of concerns, ensuring scalability, maintainability, and security. The architecture consists of Presentation Layer, Application Layer, and Data Layer.
 
 #### 4.1.1 Overall System Architecture
 
@@ -936,7 +936,7 @@ The Use Case Diagram illustrates the interactions between different actors (user
 
 ```
                                     ┌─────────────────────────────────────┐
-                                    │         PlateMate System            │
+                                    │         CookToDoor System            │
                                     └─────────────────────────────────────┘
                                               │
         ┌─────────────────────────────────────┼─────────────────────────────────────┐
@@ -1280,7 +1280,7 @@ The Android application uses XML layout files to define the user interface. Belo
 ```
 ┌─────────────────────────────────┐
 │                                 │
-│         [PlateMate Logo]        │
+│         [CookToDoor Logo]        │
 │                                 │
 │      "Home Made Food Delivery"  │
 │                                 │
@@ -1327,7 +1327,7 @@ The Android application uses XML layout files to define the user interface. Belo
 │  ← Back                   [Logo]│
 │                                 │
 │     Create Account              │
-│     Join PlateMate today        │
+│     Join CookToDoor today        │
 │                                 │
 │  ┌───────────────────────────┐  │
 │  │ Full Name                 │  │
@@ -1369,7 +1369,7 @@ The Android application uses XML layout files to define the user interface. Belo
 
 ```
 ┌─────────────────────────────────┐
-│ [☰] PlateMate                  │
+│ [☰] CookToDoor                  │
 │                                 │
 │ ┌─────────────────────────────┐ │
 │ │  Search for food...         │ │
@@ -1686,18 +1686,18 @@ The Android application uses XML layout files to define the user interface. Belo
 
 ### 5.1 Project Structure
 
-The PlateMate project is organized into two main components: Backend (Spring Boot) and Android Mobile Application. Each follows industry-standard project structure and best practices.
+The CookToDoor project is organized into two main components: Backend (Spring Boot) and Android Mobile Application. Each follows industry-standard project structure and best practices.
 
 #### 5.1.1 Backend Project Structure
 
 ```
-platemate-backend/
+CookToDoor-backend/
 ├── src/
 │   ├── main/
 │   │   ├── java/
 │   │   │   └── com/
-│   │   │       └── platemate/
-│   │   │           ├── PlateMateApplication.java          # Main Spring Boot application
+│   │   │       └── CookToDoor/
+│   │   │           ├── CookToDoorApplication.java          # Main Spring Boot application
 │   │   │           │
 │   │   │           ├── config/                           # Configuration classes
 │   │   │           │   ├── RazorpayConfig.java           # Razorpay payment configuration
@@ -1793,7 +1793,7 @@ platemate-backend/
 │   └── test/                                             # Test classes
 │       └── java/
 │           └── com/
-│               └── platemate/
+│               └── CookToDoor/
 │
 ├── target/                                                # Build output directory
 ├── pom.xml                                                # Maven configuration
@@ -1807,14 +1807,14 @@ platemate-backend/
 
 ```
 android-main/
-└── platemate-backend/
+└── CookToDoor-backend/
     ├── app/
     │   ├── src/
     │   │   ├── main/
     │   │   │   ├── java/
     │   │   │   │   └── com/
     │   │   │   │       └── example/
-    │   │   │   │           └── platemate/
+    │   │   │   │           └── CookToDoor/
     │   │   │   │               │
     │   │   │   │               ├── Activities/                    # Activity classes
     │   │   │   │               │   ├── SplashActivity.java        # Splash screen
@@ -1911,7 +1911,7 @@ The Android application uses XML layout files to define the user interface. Key 
 
 **`activity_splash.xml`** - Splash Screen
 
-- Displays PlateMate logo
+- Displays CookToDoor logo
 - Shows loading animation
 - Redirects to appropriate screen based on login status
 
@@ -2300,7 +2300,7 @@ public class ToastUtils {
 
 #### 5.4.1 PostgreSQL Database Schema
 
-PlateMate uses PostgreSQL as the primary database. The schema consists of multiple related tables with proper foreign key relationships.
+CookToDoor uses PostgreSQL as the primary database. The schema consists of multiple related tables with proper foreign key relationships.
 
 **Core Tables:**
 
@@ -2537,13 +2537,13 @@ The Android application uses **SharedPreferences** for local data storage:
 
 ## 6. Modules Description
 
-The PlateMate system is organized into multiple functional modules, each handling specific business operations. This section provides an overview of each module, its purpose, key features, and functionality.
+The CookToDoor system is organized into multiple functional modules, each handling specific business operations. This section provides an overview of each module, its purpose, key features, and functionality.
 
 ### 6.1 Module 1 – Authentication & Authorization Module
 
 #### Overview
 
-The Authentication & Authorization Module is the foundation of the PlateMate system, responsible for user registration, login, and secure access control. It implements JWT (JSON Web Token) based authentication and role-based authorization to ensure secure access to system resources.
+The Authentication & Authorization Module is the foundation of the CookToDoor system, responsible for user registration, login, and secure access control. It implements JWT (JSON Web Token) based authentication and role-based authorization to ensure secure access to system resources.
 
 #### Key Features
 
@@ -3097,7 +3097,7 @@ Admin Module (Oversight)
 
 ### 7.1 Important Code Snippets
 
-This section highlights key code implementations that demonstrate the core functionality of the PlateMate system.
+This section highlights key code implementations that demonstrate the core functionality of the CookToDoor system.
 
 #### 7.1.1 Backend Code Snippets
 
@@ -3659,7 +3659,7 @@ android:usesCleartextTraffic="true"
 
 #### 7.3.1 Data Flow Architecture
 
-The PlateMate system follows a layered architecture for data handling:
+The CookToDoor system follows a layered architecture for data handling:
 
 ```
 Android App (Presentation Layer)
@@ -3916,7 +3916,7 @@ call.enqueue(new Callback<ResponseType>() {
 
 ### 8.1 Test Cases
 
-The PlateMate system has been tested across all modules to ensure functionality, reliability, and security. This section documents the test cases organized by module and their results.
+The CookToDoor system has been tested across all modules to ensure functionality, reliability, and security. This section documents the test cases organized by module and their results.
 
 #### 8.1.1 Authentication Module Test Cases
 
@@ -4127,7 +4127,7 @@ All test cases have been executed successfully with a **100% pass rate**. The sy
 - ✅ **Compatibility**: Works across different devices and browsers
 - ✅ **Integration**: All modules work together seamlessly
 
-The PlateMate system is **ready for deployment** and meets all functional and non-functional requirements.
+The CookToDoor system is **ready for deployment** and meets all functional and non-functional requirements.
 
 ---
 
@@ -4135,11 +4135,11 @@ The PlateMate system is **ready for deployment** and meets all functional and no
 
 ### 9.1 Summary
 
-PlateMate is a comprehensive home-made food delivery system that successfully addresses the gap in the market for specialized platforms catering to home-based food providers. The project has been successfully developed and tested, demonstrating a complete end-to-end solution for the food delivery ecosystem.
+CookToDoor is a comprehensive home-made food delivery system that successfully addresses the gap in the market for specialized platforms catering to home-based food providers. The project has been successfully developed and tested, demonstrating a complete end-to-end solution for the food delivery ecosystem.
 
 #### 9.1.1 Project Achievement
 
-The PlateMate system has achieved all its primary objectives:
+The CookToDoor system has achieved all its primary objectives:
 
 1. **Successfully Connected Providers and Customers**: The platform provides a digital marketplace where home-based food providers can showcase their offerings and customers can easily discover and order authentic home-cooked meals.
 
@@ -4167,7 +4167,7 @@ The PlateMate system has achieved all its primary objectives:
 
 #### 9.1.3 System Capabilities
 
-The PlateMate system provides:
+The CookToDoor system provides:
 
 - **User Management**: Complete user registration, authentication, and profile management for all user types
 - **Provider Operations**: Provider registration, verification workflow, menu management, and order processing
@@ -4179,7 +4179,7 @@ The PlateMate system provides:
 
 #### 9.1.4 Project Impact
 
-PlateMate addresses real-world problems:
+CookToDoor addresses real-world problems:
 
 - **For Home-Based Providers**: Lowers entry barriers, provides digital presence, enables business growth
 - **For Customers**: Easy discovery of authentic home-cooked meals, convenient ordering, secure payments
@@ -4188,7 +4188,7 @@ PlateMate addresses real-world problems:
 
 ### 9.2 Limitations
 
-While the PlateMate system is fully functional and ready for deployment, there are certain limitations that should be acknowledged:
+While the CookToDoor system is fully functional and ready for deployment, there are certain limitations that should be acknowledged:
 
 #### 9.2.1 Technical Limitations
 
@@ -4258,7 +4258,7 @@ While the PlateMate system is fully functional and ready for deployment, there a
 
 ### 9.3 Future Scope
 
-The PlateMate system has a strong foundation and significant potential for future enhancements. The following features and improvements are planned for future releases:
+The CookToDoor system has a strong foundation and significant potential for future enhancements. The following features and improvements are planned for future releases:
 
 #### 9.3.1 Short-Term Enhancements (Next 6 Months)
 
@@ -4459,7 +4459,7 @@ The PlateMate system has a strong foundation and significant potential for futur
 
 ### 9.4 Final Remarks
 
-The PlateMate project has successfully delivered a comprehensive food delivery platform that addresses the specific needs of home-based food providers and customers seeking authentic home-cooked meals. The system demonstrates:
+The CookToDoor project has successfully delivered a comprehensive food delivery platform that addresses the specific needs of home-based food providers and customers seeking authentic home-cooked meals. The system demonstrates:
 
 - **Technical Excellence**: Modern technology stack, clean architecture, and best practices
 - **User-Centric Design**: Intuitive interfaces and seamless user experience
@@ -4468,13 +4468,13 @@ The PlateMate project has successfully delivered a comprehensive food delivery p
 
 While the current implementation has some limitations, the system provides a solid foundation for future enhancements. The planned features and improvements will further strengthen the platform's position in the market and enhance user satisfaction.
 
-The project has been a valuable learning experience, demonstrating the application of software engineering principles, modern development practices, and the importance of user-centered design. PlateMate is ready for deployment and has the potential to make a significant impact in the home-made food delivery market.
+The project has been a valuable learning experience, demonstrating the application of software engineering principles, modern development practices, and the importance of user-centered design. CookToDoor is ready for deployment and has the potential to make a significant impact in the home-made food delivery market.
 
 ---
 
 ## 10. References
 
-This section lists all the books, websites, tools, documentation, and resources that were referenced, used, or consulted during the development of the PlateMate project.
+This section lists all the books, websites, tools, documentation, and resources that were referenced, used, or consulted during the development of the CookToDoor project.
 
 ### 10.1 Books
 
@@ -4899,7 +4899,7 @@ This section lists all the books, websites, tools, documentation, and resources 
 
 ## Document Information
 
-**Project Name**: PlateMate - Home Made Food Delivery System  
+**Project Name**: CookToDoor - Home Made Food Delivery System  
 **Document Version**: 1.0  
 **Last Updated**: [Current Date]  
 **Document Status**: Complete  

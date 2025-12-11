@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../../AndroidStudioProjects/Platemate"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "interactive"
+	}
+}
+
