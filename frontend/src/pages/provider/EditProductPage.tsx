@@ -1,0 +1,499 @@
+import React, { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
+import Container from '../../components/ui/Container';
+import Card from '../../components/ui/Card';
+import Button from '../../components/ui/Button';
+import Input from '../../components/ui/Input';
+import Textarea from '../../components/ui/Textarea';
+import Select from '../../components/ui/Select';
+import { useTheme } from '../../hooks/useTheme';
+import { menuItemApi } from '../../api/menuItemApi';
+import { categoryApi } from '../../api/categoryApi';
+import type { UpdateMenuItemRequest } from '../../types/menuItem.types';
+import type { Category, MealType, MenuItem } from '../../types/menuItem.types';
+
+interface ProductFormData {
+  itemName: string;
+  description: string;
+  price: number;
+  categoryId: number;
+  mealType: MealType;
+  ingredients: string;
+  unitsOfMeasurement: number;
+  maxQuantity: number;
+  isAvailable: boolean;
+}
+
+const EditProductPage: React.FC = () => {
+  const theme = useTheme();
+  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingData, setLoadingData] = useState(true);
+  const [error, setError] = useState<string>('');
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [product, setProduct] = useState<MenuItem | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    watch,
+  } = useForm<ProductFormData>({
+    defaultValues: {
+      itemName: '',
+      description: '',
+      price: 0,
+      categoryId: 0,
+      mealType: 'VEG',
+      ingredients: '',
+      unitsOfMeasurement: 0,
+      maxQuantity: 1,
+      isAvailable: true,
+    },
+  });
+
+  useEffect(() => {
+    if (id) {
+      loadData();
+    }
+  }, [id]);
+
+  const loadData = async () => {
+    setLoadingData(true);
+    try {
+      const [productData, categoriesData] = await Promise.all([
+        menuItemApi.getMenuItem(Number(id)),
+        categoryApi.getCategories(),
+      ]);
+
+      setProduct(productData);
+      setCategories(categoriesData.filter((cat) => cat.isActive !== false));
+
+      // Pre-fill form
+      setValue('itemName', productData.itemName);
+      setValue('description', productData.description || '');
+      setValue('price', productData.price);
+      setValue('categoryId', productData.categoryId);
+      setValue('mealType', productData.mealType);
+      setValue('ingredients', productData.ingredients || '');
+      setValue('unitsOfMeasurement', productData.unitsOfMeasurement);
+      setValue('maxQuantity', productData.maxQuantity);
+      setValue('isAvailable', productData.isAvailable);
+
+      // Set image preview if available
+      if (productData.imageBase64List && productData.imageBase64List.length > 0) {
+        const fileType = productData.imageFileTypeList?.[0] || 'image/jpeg';
+        setImagePreview(`data:${fileType};base64,${productData.imageBase64List[0]}`);
+      } else if (productData.imageUrl) {
+        setImagePreview(productData.imageUrl);
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to load product');
+    } finally {
+      setLoadingData(false);
+    }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setError('Image size must not exceed 5MB');
+        return;
+      }
+      if (!file.type.startsWith('image/')) {
+        setError('File must be an image');
+        return;
+      }
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      setError('');
+    }
+  };
+
+  const onSubmit = async (data: ProductFormData) => {
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const requestData: UpdateMenuItemRequest = {
+        itemName: data.itemName,
+        description: data.description,
+        price: data.price,
+        categoryId: data.categoryId,
+        ingredients: data.ingredients || undefined,
+        mealType: data.mealType,
+        isAvailable: data.isAvailable,
+        unitsOfMeasurement: data.unitsOfMeasurement,
+        maxQuantity: data.maxQuantity,
+      };
+
+      await menuItemApi.updateMenuItem(Number(id), requestData, imageFile || undefined);
+      navigate('/provider/products');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to update product. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const mealTypeOptions = [
+    { value: 'VEG', label: 'Vegetarian' },
+    { value: 'NON_VEG', label: 'Non-Vegetarian' },
+    { value: 'JAIN', label: 'Jain' },
+  ];
+
+  const categoryOptions = categories.map((cat) => ({
+    value: cat.id,
+    label: cat.categoryName,
+  }));
+
+  if (loadingData) {
+    return (
+      <div
+        style={{
+          minHeight: '100vh',
+          background: `linear-gradient(135deg, ${theme.colors.primary}15 0%, ${theme.colors.secondary}15 100%)`,
+          padding: theme.spacing(4),
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <div style={{ textAlign: 'center', color: theme.colors.textSecondary }}>
+          <div
+            style={{
+              width: '48px',
+              height: '48px',
+              border: `4px solid ${theme.colors.border}`,
+              borderTopColor: theme.colors.primary,
+              borderRadius: '50%',
+              animation: 'spin 0.8s linear infinite',
+              margin: '0 auto',
+              marginBottom: theme.spacing(2),
+            }}
+          />
+          <p>Loading product...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div
+        style={{
+          minHeight: '100vh',
+          background: `linear-gradient(135deg, ${theme.colors.primary}15 0%, ${theme.colors.secondary}15 100%)`,
+          padding: theme.spacing(4),
+        }}
+      >
+        <Container maxWidth="lg">
+          <Card padding shadow="lg">
+            <div style={{ textAlign: 'center', padding: theme.spacing(4) }}>
+              <p style={{ color: theme.colors.error, marginBottom: theme.spacing(2) }}>
+                Product not found
+              </p>
+              <Button variant="primary" onClick={() => navigate('/provider/products')}>
+                Back to Products
+              </Button>
+            </div>
+          </Card>
+        </Container>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        minHeight: '100vh',
+        background: `linear-gradient(135deg, ${theme.colors.primary}15 0%, ${theme.colors.secondary}15 100%)`,
+        padding: theme.spacing(4),
+      }}
+    >
+      <Container maxWidth="lg">
+        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <Card padding shadow="lg">
+            <div style={{ textAlign: 'center', marginBottom: theme.spacing(6) }}>
+              <h1
+                style={{
+                  marginBottom: theme.spacing(1),
+                  fontSize: theme.font.size['3xl'],
+                  fontWeight: theme.font.weight.bold,
+                  color: theme.colors.dark,
+                }}
+              >
+                Edit Product
+              </h1>
+              <p
+                style={{
+                  fontSize: theme.font.size.base,
+                  color: theme.colors.textSecondary,
+                }}
+              >
+                Update your menu item details
+              </p>
+            </div>
+
+            {error && (
+              <div
+                style={{
+                  padding: theme.spacing(2.5),
+                  marginBottom: theme.spacing(3),
+                  backgroundColor: `${theme.colors.error}10`,
+                  color: theme.colors.error,
+                  borderRadius: theme.radius.md,
+                  fontSize: theme.font.size.sm,
+                  border: `1px solid ${theme.colors.error}20`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: theme.spacing(1),
+                }}
+              >
+                <span style={{ fontSize: '18px' }}>⚠️</span>
+                <span>{error}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Input
+                label="Item Name"
+                fullWidth
+                {...register('itemName', {
+                  required: 'Item name is required',
+                  minLength: {
+                    value: 2,
+                    message: 'Item name must be at least 2 characters',
+                  },
+                })}
+                error={errors.itemName?.message}
+              />
+
+              <Textarea
+                label="Description"
+                fullWidth
+                rows={4}
+                {...register('description', {
+                  required: 'Description is required',
+                  minLength: {
+                    value: 10,
+                    message: 'Description must be at least 10 characters',
+                  },
+                })}
+                error={errors.description?.message}
+              />
+
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: theme.spacing(3),
+                }}
+              >
+                <Input
+                  label="Price (₹)"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  fullWidth
+                  {...register('price', {
+                    required: 'Price is required',
+                    min: {
+                      value: 0,
+                      message: 'Price must be greater than or equal to 0',
+                    },
+                    valueAsNumber: true,
+                  })}
+                  error={errors.price?.message}
+                />
+
+                <Select
+                  label="Category"
+                  fullWidth
+                  options={[
+                    { value: 0, label: 'Select Category' },
+                    ...categoryOptions,
+                  ]}
+                  {...register('categoryId', {
+                    required: 'Category is required',
+                    validate: (value) => value !== 0 || 'Please select a category',
+                    valueAsNumber: true,
+                  })}
+                  error={errors.categoryId?.message}
+                  onChange={(e) => setValue('categoryId', Number(e.target.value))}
+                />
+              </div>
+
+              <Select
+                label="Meal Type"
+                fullWidth
+                options={mealTypeOptions}
+                {...register('mealType', {
+                  required: 'Meal type is required',
+                })}
+                error={errors.mealType?.message}
+                onChange={(e) => setValue('mealType', e.target.value as MealType)}
+              />
+
+              <Textarea
+                label="Ingredients (Optional)"
+                fullWidth
+                rows={3}
+                {...register('ingredients')}
+                helperText="List the main ingredients"
+              />
+
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: theme.spacing(3),
+                }}
+              >
+                <Input
+                  label="Units of Measurement (grams)"
+                  type="number"
+                  min="0"
+                  fullWidth
+                  {...register('unitsOfMeasurement', {
+                    required: 'Units of measurement is required',
+                    min: {
+                      value: 0,
+                      message: 'Must be greater than or equal to 0',
+                    },
+                    valueAsNumber: true,
+                  })}
+                  error={errors.unitsOfMeasurement?.message}
+                />
+
+                <Input
+                  label="Max Quantity"
+                  type="number"
+                  min="1"
+                  fullWidth
+                  {...register('maxQuantity', {
+                    required: 'Max quantity is required',
+                    min: {
+                      value: 1,
+                      message: 'Must be at least 1',
+                    },
+                    valueAsNumber: true,
+                  })}
+                  error={errors.maxQuantity?.message}
+                />
+              </div>
+
+              <div style={{ marginBottom: theme.spacing(3) }}>
+                <label
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: theme.spacing(2),
+                    cursor: 'pointer',
+                    fontSize: theme.font.size.base,
+                    color: theme.colors.text,
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    {...register('isAvailable')}
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      cursor: 'pointer',
+                    }}
+                  />
+                  <span>Available for order</span>
+                </label>
+              </div>
+
+              <div style={{ marginBottom: theme.spacing(3) }}>
+                <label
+                  style={{
+                    display: 'block',
+                    marginBottom: theme.spacing(0.5),
+                    fontSize: theme.font.size.sm,
+                    fontWeight: theme.font.weight.medium,
+                    color: theme.colors.text,
+                  }}
+                >
+                  Product Image (Optional - Leave empty to keep current image)
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  style={{
+                    width: '100%',
+                    padding: theme.spacing(1.5),
+                    fontSize: theme.font.size.base,
+                    fontFamily: theme.font.family,
+                    color: theme.colors.text,
+                    backgroundColor: theme.colors.white,
+                    border: `1.5px solid ${theme.colors.border}`,
+                    borderRadius: theme.radius.md,
+                  }}
+                />
+                {imagePreview && (
+                  <div style={{ marginTop: theme.spacing(2) }}>
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      style={{
+                        maxWidth: '200px',
+                        maxHeight: '200px',
+                        borderRadius: theme.radius.md,
+                        border: `1px solid ${theme.colors.border}`,
+                      }}
+                    />
+                  </div>
+                )}
+                <p
+                  style={{
+                    marginTop: theme.spacing(0.5),
+                    fontSize: theme.font.size.xs,
+                    color: theme.colors.textSecondary,
+                  }}
+                >
+                  Maximum file size: 5MB. Supported formats: JPG, PNG, JPEG
+                </p>
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  gap: theme.spacing(3),
+                  marginTop: theme.spacing(4),
+                }}
+              >
+                <Button
+                  type="button"
+                  variant="outline"
+                  fullWidth
+                  onClick={() => navigate('/provider/products')}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" variant="primary" fullWidth isLoading={isLoading}>
+                  Update Product
+                </Button>
+              </div>
+            </form>
+          </Card>
+        </div>
+      </Container>
+    </div>
+  );
+};
+
+export default EditProductPage;

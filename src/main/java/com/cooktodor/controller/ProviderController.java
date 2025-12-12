@@ -154,12 +154,19 @@ public class ProviderController {
 
         if (existingProvider == null) {
             // Create new provider
+            // Note: Providers are typically auto-created on signup, so this should rarely happen
+            // Zone is required (NOT NULL constraint), so throw error if not provided
+            if (zoneId == null) {
+                throw new IllegalArgumentException("Zone ID is required for new provider. Please provide a valid zone ID.");
+            }
+            
             TiffinProviderRequest providerRequest = new TiffinProviderRequest();
             providerRequest.setUser(user.getId());
             providerRequest.setZone(zoneId);
             providerRequest.setBusinessName(businessName);
             providerRequest.setDescription(description);
-            providerRequest.setCommissionRate(commissionRate);
+            // Use default 0.0 if commissionRate is null (to satisfy NOT NULL constraint)
+            providerRequest.setCommissionRate(commissionRate != null ? commissionRate : 0.0);
             providerRequest.setProvidesDelivery(providesDelivery);
             providerRequest.setDeliveryRadius(deliveryRadius);
 
@@ -168,7 +175,8 @@ public class ProviderController {
             // Update existing provider
             existingProvider.setBusinessName(businessName);
             existingProvider.setDescription(description);
-            existingProvider.setCommissionRate(commissionRate);
+            // Use default 0.0 if commissionRate is null (to satisfy NOT NULL constraint)
+            existingProvider.setCommissionRate(commissionRate != null ? commissionRate : 0.0);
             existingProvider.setProvidesDelivery(providesDelivery);
             existingProvider.setDeliveryRadius(deliveryRadius);
             
