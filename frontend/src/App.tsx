@@ -12,15 +12,24 @@ import EditProductPage from './pages/provider/EditProductPage';
 import OrdersListPage from './pages/provider/OrdersListPage';
 import ProviderProfilePage from './pages/provider/ProviderProfilePage';
 import ProviderLayout from './layouts/ProviderLayout';
+import CustomerLayout from './layouts/CustomerLayout';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './hooks/useAuth';
+import { getDefaultRoute } from './utils/routing';
+import CustomerHomePage from './pages/customer/CustomerHomePage';
+import ProductDetailPage from './pages/customer/ProductDetailPage';
+import CartPage from './pages/customer/CartPage';
+import CheckoutPage from './pages/customer/CheckoutPage';
+import OrdersPage from './pages/customer/OrdersPage';
+import OrderDetailPage from './pages/customer/OrderDetailPage';
+import CustomerProfilePage from './pages/customer/CustomerProfilePage';
 
 // Component to redirect authenticated users away from auth pages
 const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, role } = useAuth();
   
-  if (isAuthenticated) {
-    return <Navigate to="/" replace />;
+  if (isAuthenticated && role) {
+    return <Navigate to={getDefaultRoute(role)} replace />;
   }
   
   return <>{children}</>;
@@ -81,12 +90,23 @@ function App() {
             </ProtectedRoute>
           }
         />
-        {/* Protected routes - will be implemented later */}
+        {/* Customer routes */}
         <Route
-          path="/dashboard"
+          path="/customer/*"
           element={
-            <ProtectedRoute>
-              <div>Dashboard (Coming Soon)</div>
+            <ProtectedRoute requiredRole="Customer">
+              <CustomerLayout>
+                <Routes>
+                  <Route path="home" element={<CustomerHomePage />} />
+                  <Route path="products/:id" element={<ProductDetailPage />} />
+                  <Route path="cart" element={<CartPage />} />
+                  <Route path="checkout" element={<CheckoutPage />} />
+                  <Route path="orders" element={<OrdersPage />} />
+                  <Route path="orders/:id" element={<OrderDetailPage />} />
+                  <Route path="profile" element={<CustomerProfilePage />} />
+                  <Route path="*" element={<Navigate to="/customer/home" replace />} />
+                </Routes>
+              </CustomerLayout>
             </ProtectedRoute>
           }
         />

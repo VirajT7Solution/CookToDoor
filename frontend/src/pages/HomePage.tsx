@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from '../components/ui/Container';
 import Logo from '../components/ui/Logo';
@@ -6,11 +6,19 @@ import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import { useTheme } from '../hooks/useTheme';
 import { useAuth } from '../hooks/useAuth';
+import { getDefaultRoute } from '../utils/routing';
 
 const HomePage: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { isAuthenticated, username, logout } = useAuth();
+  const { isAuthenticated, username, logout, role } = useAuth();
+
+  // Redirect authenticated users to their default route
+  useEffect(() => {
+    if (isAuthenticated && role) {
+      navigate(getDefaultRoute(role), { replace: true });
+    }
+  }, [isAuthenticated, role, navigate]);
 
   return (
     <div

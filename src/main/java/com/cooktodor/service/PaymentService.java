@@ -256,20 +256,20 @@ public class PaymentService {
             return order; // Already processed, return early
         }
         
-        // Verify signature if provided (optional for app verification, webhook will also verify)
-        // Note: Android SDK doesn't provide signature directly, so this is mainly for webhook verification
-        // For app verification, we trust the payment ID from Razorpay and let webhook handle full verification
+        // Verify signature if provided
+        // Note: Payment signatures are verified using the API Secret Key (keySecret),
+        // NOT the webhook secret. Webhook secrets are only used for webhook signature verification.
         if (razorpaySignature != null && !razorpaySignature.isEmpty() && 
-            props.getRazorpay().getWebhookSecret() != null && 
-            !props.getRazorpay().getWebhookSecret().isEmpty()) {
+            props.getRazorpay().getKeySecret() != null && 
+            !props.getRazorpay().getKeySecret().isEmpty()) {
             // Build payload for signature verification
             String payload = razorpayOrderId + "|" + razorpayPaymentId;
-            String secret = props.getRazorpay().getWebhookSecret();
+            String secret = props.getRazorpay().getKeySecret(); // Use API Secret Key for payment signature verification
             if (!verifySignature(payload, razorpaySignature, secret)) {
                 throw new BadRequestException("Invalid payment signature");
             }
         }
-        // If signature is not provided or webhook secret is not set, we still proceed
+        // If signature is not provided or API secret key is not set, we still proceed
         // The webhook will handle full verification when it arrives
         
         // Fetch payment details from Razorpay to get actual payment method

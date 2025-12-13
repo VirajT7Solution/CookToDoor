@@ -19,7 +19,7 @@ const LoginForm: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, role } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
 
@@ -44,12 +44,12 @@ const LoginForm: React.FC = () => {
     }
   }, [preFilledUsername, setValue]);
 
-  // Redirect if already authenticated
+  // Redirect if already authenticated based on role
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/');
+    if (isAuthenticated && role) {
+      navigate(getDefaultRoute(role), { replace: true });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, role, navigate]);
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
@@ -59,30 +59,35 @@ const LoginForm: React.FC = () => {
       const response = await authApi.login(data);
       login(response);
       
-      // Check provider profile completion if user is a provider
+      // Handle role-based redirection
       if (response.role === 'Provider') {
+        // Check provider profile completion
         try {
           const profileCheck = await providerApi.checkProfileComplete();
           
           // If profile is incomplete or onboarding, redirect to onboarding page
           if (!profileCheck.isComplete || profileCheck.isOnboarding) {
-            navigate('/provider/details');
+            navigate('/provider/details', { replace: true });
             return;
           }
           
           // Profile is complete, redirect to dashboard
-          navigate('/provider/dashboard');
+          navigate('/provider/dashboard', { replace: true });
           return;
         } catch (profileErr: any) {
           // If profile check fails, assume profile is incomplete
           console.error('Profile check failed:', profileErr);
-          navigate('/provider/details');
+          navigate('/provider/details', { replace: true });
           return;
         }
+      } else if (response.role === 'Customer') {
+        // Customer: redirect directly to customer home
+        navigate('/customer/home', { replace: true });
+        return;
       }
       
-      // For other roles, use default routing
-      navigate(getDefaultRoute(response.role));
+      // For other roles (Delivery Partner, Admin), use default routing
+      navigate(getDefaultRoute(response.role), { replace: true });
     } catch (err: any) {
       setError(
         err.response?.data?.message || 'Invalid username or password'

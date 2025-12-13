@@ -9,7 +9,7 @@ export const getDefaultRoute = (role: UserRole): string => {
     case 'Provider':
       return '/provider/dashboard';
     case 'Customer':
-      return '/';
+      return '/customer/home';
     case 'Delivery Partner':
       return '/delivery/dashboard';
     case 'Admin':
