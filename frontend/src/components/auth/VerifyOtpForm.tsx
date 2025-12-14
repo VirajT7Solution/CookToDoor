@@ -162,22 +162,42 @@ const VerifyOtpForm: React.FC<VerifyOtpFormProps> = ({
           error={errors.otp?.message}
         />
 
-        <Button
-          type="submit"
-          variant="primary"
-          fullWidth
-          size="lg"
-          isLoading={isLoading}
+        <div
           style={{
+            display: 'flex',
+            justifyContent: 'center',
             marginTop: theme.spacing(4),
-            fontSize: theme.font.size.base,
-            fontWeight: theme.font.weight.semibold,
-            padding: `${theme.spacing(2)} ${theme.spacing(4)}`,
-            boxShadow: theme.shadow.md,
           }}
         >
-          {isLoading ? 'Verifying...' : 'Verify OTP'}
-        </Button>
+          <Button
+            type="submit"
+            variant="primary"
+            size="lg"
+            isLoading={isLoading}
+            style={{
+              fontSize: theme.font.size.base,
+              fontWeight: theme.font.weight.semibold,
+              padding: `${theme.spacing(2)} ${theme.spacing(4)}`,
+              boxShadow: theme.shadow.md,
+              backgroundColor: 'rgb(243, 106, 16)',
+              borderColor: 'rgb(243, 106, 16)',
+            }}
+            onMouseEnter={(e) => {
+              if (!isLoading) {
+                e.currentTarget.style.backgroundColor = 'rgb(218, 95, 14)'; // Darker shade on hover
+                e.currentTarget.style.borderColor = 'rgb(218, 95, 14)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isLoading) {
+                e.currentTarget.style.backgroundColor = 'rgb(243, 106, 16)';
+                e.currentTarget.style.borderColor = 'rgb(243, 106, 16)';
+              }
+            }}
+          >
+            {isLoading ? 'Verifying...' : 'Verify OTP'}
+          </Button>
+        </div>
 
         <div
           style={{

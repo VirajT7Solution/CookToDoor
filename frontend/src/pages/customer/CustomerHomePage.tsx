@@ -192,11 +192,33 @@ const CustomerHomePage: React.FC = () => {
                 top: '50%',
                 transform: 'translateY(-50%)',
                 zIndex: 2,
-                fontSize: '20px',
                 display: 'flex',
                 alignItems: 'center',
+                width: '24px',
+                height: '24px',
               }}>
-                🔍
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="11"
+                    cy="11"
+                    r="7"
+                    stroke="rgb(243, 106, 16)"
+                    strokeWidth="2"
+                    fill="none"
+                  />
+                  <path
+                    d="M16 16L20 20"
+                    stroke="rgb(243, 106, 16)"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
               </div>
               <input
                 placeholder="Search for food items..."
@@ -205,25 +227,25 @@ const CustomerHomePage: React.FC = () => {
                 style={{
                   width: '100%',
                   padding: `${theme.spacing(2)} ${theme.spacing(4)}`,
-                  paddingLeft: theme.spacing(5),
+                  paddingLeft: '48px', // 24px (icon width) + 12px (icon left) + 12px (spacing)
                   fontSize: theme.font.size.base,
                   fontFamily: theme.font.family,
                   color: theme.colors.text,
                   backgroundColor: theme.colors.white,
-                  border: `2px solid ${theme.colors.primary}`,
+                  border: `1px solid rgba(243, 106, 16, 0.3)`,
                   borderRadius: theme.radius.xl,
-                  boxShadow: theme.shadow.md,
+                  boxShadow: 'none',
                   transition: theme.transitions.base,
                   outline: 'none',
                   boxSizing: 'border-box',
                 }}
                 onFocus={(e) => {
-                  e.currentTarget.style.borderColor = theme.colors.primaryDark;
-                  e.currentTarget.style.boxShadow = theme.shadow.lg;
+                  e.currentTarget.style.borderColor = 'rgba(243, 106, 16, 0.5)';
+                  e.currentTarget.style.boxShadow = 'none';
                 }}
                 onBlur={(e) => {
-                  e.currentTarget.style.borderColor = theme.colors.primary;
-                  e.currentTarget.style.boxShadow = theme.shadow.md;
+                  e.currentTarget.style.borderColor = 'rgba(243, 106, 16, 0.3)';
+                  e.currentTarget.style.boxShadow = 'none';
                 }}
               />
             </div>
