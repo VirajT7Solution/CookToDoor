@@ -23,6 +23,9 @@ import CheckoutPage from './pages/customer/CheckoutPage';
 import OrdersPage from './pages/customer/OrdersPage';
 import OrderDetailPage from './pages/customer/OrderDetailPage';
 import CustomerProfilePage from './pages/customer/CustomerProfilePage';
+import DeliveryLayout from './layouts/DeliveryLayout';
+import DeliveryDashboardPage from './pages/delivery/DeliveryDashboardPage';
+import DeliveryProfilePage from './pages/delivery/DeliveryProfilePage';
 
 // Component to redirect authenticated users away from auth pages
 const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -107,6 +110,21 @@ function App() {
                   <Route path="*" element={<Navigate to="/customer/home" replace />} />
                 </Routes>
               </CustomerLayout>
+            </ProtectedRoute>
+          }
+        />
+        {/* Delivery Partner routes */}
+        <Route
+          path="/delivery/*"
+          element={
+            <ProtectedRoute requiredRole="Delivery Partner">
+              <DeliveryLayout>
+                <Routes>
+                  <Route path="dashboard" element={<DeliveryDashboardPage />} />
+                  <Route path="profile" element={<DeliveryProfilePage />} />
+                  <Route path="*" element={<Navigate to="/delivery/dashboard" replace />} />
+                </Routes>
+              </DeliveryLayout>
             </ProtectedRoute>
           }
         />

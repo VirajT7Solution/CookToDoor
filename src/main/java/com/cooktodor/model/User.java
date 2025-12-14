@@ -11,6 +11,7 @@ import com.cooktodor.enums.Role;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -38,7 +39,7 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = true)
     private String phoneNumber; 
     
-    @Enumerated(EnumType.STRING)   // Stores as "ROLE_CUSTOMER", "ROLE_ADMIN"
+    @Convert(converter = com.cooktodor.enums.RoleConverter.class)
     @Column(nullable = false)
     private Role role;
     

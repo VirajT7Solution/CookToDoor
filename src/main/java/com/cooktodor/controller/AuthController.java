@@ -106,12 +106,7 @@ public class AuthController {
         String password = signupRequest.get("password");
         String phone = signupRequest.get("phone"); // Extract phone number from request
         String roleStr = signupRequest.getOrDefault("role", "ROLE_CUSTOMER");
-        Role role;
-        try {
-            role = Role.valueOf(roleStr.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            role = Role.ROLE_CUSTOMER; // fallback if invalid role passed
-        }
+        Role role = parseRole(roleStr);
 
         // Check if username already exists
         if (userService.getUserDetailsByUsername(username) != null) {
@@ -343,6 +338,38 @@ public class AuthController {
             response.put("message", "An error occurred. Please try again.");
             response.put("success", false);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    /**
+     * Parse role string to Role enum, handling both formats:
+     * - "ROLE_DELIVERY_PARTNER" (with ROLE_ prefix)
+     * - "DELIVERY_PARTNER" (without ROLE_ prefix)
+     */
+    private Role parseRole(String roleStr) {
+        if (roleStr == null || roleStr.trim().isEmpty()) {
+            return Role.ROLE_CUSTOMER;
+        }
+        
+        String normalized = roleStr.trim().toUpperCase();
+        
+        // If it already has ROLE_ prefix, use it directly
+        if (normalized.startsWith("ROLE_")) {
+            try {
+                return Role.valueOf(normalized);
+            } catch (IllegalArgumentException e) {
+                logger.warn("Invalid role format: {}, falling back to ROLE_CUSTOMER", normalized);
+                return Role.ROLE_CUSTOMER;
+            }
+        }
+        
+        // If it doesn't have ROLE_ prefix, add it
+        String withPrefix = "ROLE_" + normalized;
+        try {
+            return Role.valueOf(withPrefix);
+        } catch (IllegalArgumentException e) {
+            logger.warn("Invalid role format: {}, falling back to ROLE_CUSTOMER", normalized);
+            return Role.ROLE_CUSTOMER;
         }
     }
 

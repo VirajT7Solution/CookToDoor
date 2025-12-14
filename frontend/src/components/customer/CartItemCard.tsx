@@ -242,3 +242,4 @@ const CartItemCard: React.FC<CartItemCardProps> = ({
 
 export default CartItemCard;
 
+

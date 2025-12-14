@@ -20,6 +20,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
     if (role === 'Provider') {
       return <Navigate to="/provider/dashboard" replace />;
     }
+    if (role === 'Delivery Partner') {
+      return <Navigate to="/delivery/dashboard" replace />;
+    }
     return <Navigate to="/" replace />;
   }
 

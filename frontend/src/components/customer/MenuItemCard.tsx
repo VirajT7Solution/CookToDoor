@@ -230,3 +230,4 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
 
 export default MenuItemCard;
 
+
