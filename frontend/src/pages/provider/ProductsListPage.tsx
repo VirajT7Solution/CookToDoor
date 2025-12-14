@@ -80,12 +80,14 @@ const ProductsListPage: React.FC = () => {
     return (
       <div
         style={{
-          minHeight: '100vh',
+          minHeight: '100%',
           background: `linear-gradient(135deg, ${theme.colors.primary}15 0%, ${theme.colors.secondary}15 100%)`,
           padding: theme.spacing(4),
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          width: '100%',
+          boxSizing: 'border-box',
         }}
       >
         <div style={{ textAlign: 'center', color: theme.colors.textSecondary }}>
@@ -110,9 +112,11 @@ const ProductsListPage: React.FC = () => {
   return (
     <div
       style={{
-        minHeight: '100vh',
+        minHeight: '100%',
         background: `linear-gradient(135deg, ${theme.colors.primary}15 0%, ${theme.colors.secondary}15 100%)`,
         padding: theme.spacing(4),
+        width: '100%',
+        boxSizing: 'border-box',
       }}
     >
       <Container maxWidth="xl">

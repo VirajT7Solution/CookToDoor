@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../hooks/useTheme';
-import CustomerLayout from '../../layouts/CustomerLayout';
 import RatingModal from '../../components/customer/RatingModal';
 import { customerApi } from '../../api/customerApi';
 import { useCartStore } from '../../store/cartStore';
@@ -120,31 +119,26 @@ const ProductDetailPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <CustomerLayout>
-        <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
-          <div style={{ fontSize: '48px', marginBottom: theme.spacing(2) }}>⏳</div>
-          <p>Loading product details...</p>
-        </div>
-      </CustomerLayout>
+      <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
+        <div style={{ fontSize: '48px', marginBottom: theme.spacing(2) }}>⏳</div>
+        <p>Loading product details...</p>
+      </div>
     );
   }
 
   if (error || !item) {
     return (
-      <CustomerLayout>
-        <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
-          <p style={{ color: theme.colors.error }}>{error || 'Product not found'}</p>
-          <Button onClick={() => navigate('/customer/home')} style={{ marginTop: theme.spacing(2) }}>
-            Back to Home
-          </Button>
-        </div>
-      </CustomerLayout>
+      <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
+        <p style={{ color: theme.colors.error }}>{error || 'Product not found'}</p>
+        <Button onClick={() => navigate('/customer/home')} style={{ marginTop: theme.spacing(2) }}>
+          Back to Home
+        </Button>
+      </div>
     );
   }
 
   return (
-    <CustomerLayout>
-      <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+    <div style={{ width: '100%', maxWidth: '100%' }}>
         {/* Image Carousel */}
         {imageUrls.length > 0 ? (
           <Card padding={false} style={{ marginBottom: theme.spacing(4), overflow: 'hidden' }}>
@@ -497,7 +491,6 @@ const ProductDetailPage: React.FC = () => {
           isLoading={isSubmittingRating}
         />
       </div>
-    </CustomerLayout>
   );
 };
 

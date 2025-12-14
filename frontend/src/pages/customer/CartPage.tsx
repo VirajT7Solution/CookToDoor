@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../hooks/useTheme';
-import CustomerLayout from '../../layouts/CustomerLayout';
 import CartItemCard from '../../components/customer/CartItemCard';
 import { customerApi } from '../../api/customerApi';
 import { useCartStore } from '../../store/cartStore';
@@ -95,29 +94,25 @@ const CartPage: React.FC = () => {
 
   if (isLoadingCart) {
     return (
-      <CustomerLayout>
-        <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
-          <div style={{ fontSize: '48px', marginBottom: theme.spacing(2) }}>⏳</div>
-          <p>Loading cart...</p>
-        </div>
-      </CustomerLayout>
+      <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
+        <div style={{ fontSize: '48px', marginBottom: theme.spacing(2) }}>⏳</div>
+        <p>Loading cart...</p>
+      </div>
     );
   }
 
   if (!cart || cart.items.length === 0) {
     return (
-      <CustomerLayout>
-        <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
-          <div style={{ fontSize: '64px', marginBottom: theme.spacing(2) }}>🛒</div>
-          <h2 style={{ marginBottom: theme.spacing(1) }}>Your cart is empty</h2>
-          <p style={{ color: theme.colors.textSecondary, marginBottom: theme.spacing(4) }}>
-            Add some delicious items to get started!
-          </p>
-          <Button variant="primary" onClick={() => navigate('/customer/home')}>
-            Browse Menu
-          </Button>
-        </div>
-      </CustomerLayout>
+      <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
+        <div style={{ fontSize: '64px', marginBottom: theme.spacing(2) }}>🛒</div>
+        <h2 style={{ marginBottom: theme.spacing(1) }}>Your cart is empty</h2>
+        <p style={{ color: theme.colors.textSecondary, marginBottom: theme.spacing(4) }}>
+          Add some delicious items to get started!
+        </p>
+        <Button variant="primary" onClick={() => navigate('/customer/home')}>
+          Browse Menu
+        </Button>
+      </div>
     );
   }
 
@@ -126,8 +121,7 @@ const CartPage: React.FC = () => {
   const isMultipleProviders = providerIds.size > 1;
 
   return (
-    <CustomerLayout>
-      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+    <div style={{ width: '100%', maxWidth: '100%' }}>
         <h1
           style={{
             fontSize: theme.font.size.xl,
@@ -229,7 +223,6 @@ const CartPage: React.FC = () => {
           )}
         </Card>
       </div>
-    </CustomerLayout>
   );
 };
 

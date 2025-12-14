@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../hooks/useTheme';
-import CustomerLayout from '../../layouts/CustomerLayout';
 import { customerApi } from '../../api/customerApi';
 import type { Order } from '../../types/order.types';
 import { formatCurrency, formatDate } from '../../utils';
@@ -95,25 +94,21 @@ const OrderDetailPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <CustomerLayout>
-        <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
-          <div style={{ fontSize: '48px', marginBottom: theme.spacing(2) }}>⏳</div>
-          <p>Loading order details...</p>
-        </div>
-      </CustomerLayout>
+      <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
+        <div style={{ fontSize: '48px', marginBottom: theme.spacing(2) }}>⏳</div>
+        <p>Loading order details...</p>
+      </div>
     );
   }
 
   if (error || !order) {
     return (
-      <CustomerLayout>
-        <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
-          <p style={{ color: theme.colors.error }}>{error || 'Order not found'}</p>
-          <Button onClick={() => navigate('/customer/orders')} style={{ marginTop: theme.spacing(2) }}>
-            Back to Orders
-          </Button>
-        </div>
-      </CustomerLayout>
+      <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
+        <p style={{ color: theme.colors.error }}>{error || 'Order not found'}</p>
+        <Button onClick={() => navigate('/customer/orders')} style={{ marginTop: theme.spacing(2) }}>
+          Back to Orders
+        </Button>
+      </div>
     );
   }
 
@@ -121,8 +116,7 @@ const OrderDetailPage: React.FC = () => {
   const canCancel = order.orderStatus === 'PENDING';
 
   return (
-    <CustomerLayout>
-      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+    <div style={{ width: '100%', maxWidth: '100%' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: theme.spacing(2), marginBottom: theme.spacing(4) }}>
           <Button variant="outline" size="sm" onClick={() => navigate('/customer/orders')}>
             ← Back
@@ -352,7 +346,6 @@ const OrderDetailPage: React.FC = () => {
           </Card>
         )}
       </div>
-    </CustomerLayout>
   );
 };
 

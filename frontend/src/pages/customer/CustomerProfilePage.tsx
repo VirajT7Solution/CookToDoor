@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTheme } from '../../hooks/useTheme';
-import CustomerLayout from '../../layouts/CustomerLayout';
 import AddressForm from '../../components/customer/AddressForm';
 import { userApi } from '../../api/userApi';
 import { customerApi } from '../../api/customerApi';
@@ -152,28 +151,23 @@ const CustomerProfilePage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <CustomerLayout>
-        <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
-          <div style={{ fontSize: '48px', marginBottom: theme.spacing(2) }}>⏳</div>
-          <p>Loading profile...</p>
-        </div>
-      </CustomerLayout>
+      <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
+        <div style={{ fontSize: '48px', marginBottom: theme.spacing(2) }}>⏳</div>
+        <p>Loading profile...</p>
+      </div>
     );
   }
 
   if (!user) {
     return (
-      <CustomerLayout>
-        <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
-          <p>Failed to load profile</p>
-        </div>
-      </CustomerLayout>
+      <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
+        <p>Failed to load profile</p>
+      </div>
     );
   }
 
   return (
-    <CustomerLayout>
-      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+    <div style={{ width: '100%', maxWidth: '100%' }}>
         <h1
           style={{
             fontSize: theme.font.size.xl,
@@ -337,7 +331,6 @@ const CustomerProfilePage: React.FC = () => {
           )}
         </Card>
       </div>
-    </CustomerLayout>
   );
 };
 

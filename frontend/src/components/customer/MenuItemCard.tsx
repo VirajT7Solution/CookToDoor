@@ -76,30 +76,34 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
       onClick={handleClick}
       style={{
         backgroundColor: theme.colors.white,
-        borderRadius: theme.radius.lg,
+        borderRadius: theme.radius.xl,
         overflow: 'hidden',
         boxShadow: theme.shadow.sm,
         cursor: 'pointer',
-        transition: theme.transitions.base,
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
+        border: `1px solid ${theme.colors.border}`,
+        position: 'relative',
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-4px)';
-        e.currentTarget.style.boxShadow = theme.shadow.md;
+        e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
+        e.currentTarget.style.boxShadow = theme.shadow.lg;
+        e.currentTarget.style.borderColor = theme.colors.primary;
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.transform = 'translateY(0) scale(1)';
         e.currentTarget.style.boxShadow = theme.shadow.sm;
+        e.currentTarget.style.borderColor = theme.colors.border;
       }}
     >
       {/* Image */}
       <div
         style={{
           width: '100%',
-          height: '180px',
-          backgroundColor: theme.colors.light,
+          height: '200px',
+          background: `linear-gradient(135deg, ${theme.colors.light} 0%, ${theme.colors.white} 100%)`,
           position: 'relative',
           overflow: 'hidden',
         }}
@@ -112,6 +116,13 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
               width: '100%',
               height: '100%',
               objectFit: 'cover',
+              transition: 'transform 0.5s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.1)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
             }}
           />
         ) : (
@@ -122,8 +133,8 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: theme.colors.textSecondary,
-              fontSize: theme.font.size['2xl'],
+              background: `linear-gradient(135deg, ${theme.colors.primary}10 0%, ${theme.colors.primaryLight}05 100%)`,
+              fontSize: theme.font.size['3xl'],
             }}
           >
             🍽️
@@ -133,14 +144,17 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
         <div
           style={{
             position: 'absolute',
-            top: theme.spacing(1),
-            right: theme.spacing(1),
-            backgroundColor: mealTypeColors[item.mealType] || theme.colors.primary,
+            top: theme.spacing(1.5),
+            right: theme.spacing(1.5),
+            background: `linear-gradient(135deg, ${mealTypeColors[item.mealType] || theme.colors.primary} 0%, ${mealTypeColors[item.mealType] || theme.colors.primaryDark} 100%)`,
             color: theme.colors.white,
-            padding: `${theme.spacing(0.5)} ${theme.spacing(1)}`,
-            borderRadius: theme.radius.md,
+            padding: `${theme.spacing(0.75)} ${theme.spacing(1.5)}`,
+            borderRadius: theme.radius.full,
             fontSize: theme.font.size.xs,
-            fontWeight: theme.font.weight.semibold,
+            fontWeight: theme.font.weight.bold,
+            boxShadow: theme.shadow.md,
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px',
           }}
         >
           {item.mealType}
@@ -150,24 +164,25 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
       {/* Content */}
       <div
         style={{
-          padding: theme.spacing(2),
+          padding: theme.spacing(2.5),
           display: 'flex',
           flexDirection: 'column',
           flex: 1,
-          gap: theme.spacing(1),
+          gap: theme.spacing(1.5),
         }}
       >
         {/* Item Name */}
         <h3
           style={{
-            fontSize: theme.font.size.base,
-            fontWeight: theme.font.weight.semibold,
-            color: theme.colors.text,
+            fontSize: theme.font.size.lg,
+            fontWeight: theme.font.weight.bold,
+            color: theme.colors.dark,
             margin: 0,
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
+            lineHeight: 1.4,
           }}
         >
           {item.itemName}
@@ -175,20 +190,19 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
 
         {/* Provider Name */}
         {item.providerBusinessName && (
-          <p
-            style={{
-              fontSize: theme.font.size.sm,
-              color: theme.colors.textSecondary,
-              margin: 0,
-            }}
-          >
-            by {item.providerBusinessName}
-          </p>
-        )}
-
-        {/* Rating */}
-        {item.averageRating !== undefined && item.averageRating > 0 && (
-          <div>{renderStars(item.averageRating)}</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: theme.spacing(0.5) }}>
+            <span style={{ fontSize: '14px' }}>👨‍🍳</span>
+            <p
+              style={{
+                fontSize: theme.font.size.sm,
+                color: theme.colors.textSecondary,
+                margin: 0,
+                fontWeight: theme.font.weight.medium,
+              }}
+            >
+              {item.providerBusinessName}
+            </p>
+          </div>
         )}
 
         {/* Price and Weight */}
@@ -198,15 +212,20 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
             justifyContent: 'space-between',
             alignItems: 'flex-end',
             marginTop: 'auto',
-            paddingTop: theme.spacing(1),
+            paddingTop: theme.spacing(2),
+            borderTop: `1px solid ${theme.colors.border}`,
           }}
         >
           <div>
             <div
               style={{
-                fontSize: theme.font.size.lg,
+                fontSize: theme.font.size.xl,
                 fontWeight: theme.font.weight.bold,
-                color: theme.colors.primary,
+                background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.primaryDark} 100%)`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                lineHeight: 1.2,
               }}
             >
               {formatCurrency(item.price)}
@@ -216,12 +235,33 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
                 style={{
                   fontSize: theme.font.size.xs,
                   color: theme.colors.textSecondary,
+                  fontWeight: theme.font.weight.medium,
+                  marginTop: theme.spacing(0.25),
                 }}
               >
                 {item.unitsOfMeasurement}g
               </div>
             )}
           </div>
+          {item.averageRating !== undefined && item.averageRating > 0 && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: theme.spacing(0.5),
+              backgroundColor: `${theme.colors.warning}15`,
+              padding: `${theme.spacing(0.5)} ${theme.spacing(1)}`,
+              borderRadius: theme.radius.md,
+            }}>
+              <span style={{ fontSize: '14px' }}>⭐</span>
+              <span style={{
+                fontSize: theme.font.size.xs,
+                fontWeight: theme.font.weight.bold,
+                color: theme.colors.warning,
+              }}>
+                {item.averageRating.toFixed(1)}
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </div>

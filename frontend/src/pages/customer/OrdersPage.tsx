@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../hooks/useTheme';
-import CustomerLayout from '../../layouts/CustomerLayout';
 import { customerApi } from '../../api/customerApi';
 import type { Order as OrderType } from '../../types/order.types';
 import { formatCurrency, formatDate } from '../../utils';
@@ -78,31 +77,26 @@ const OrdersPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <CustomerLayout>
-        <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
-          <div style={{ fontSize: '48px', marginBottom: theme.spacing(2) }}>⏳</div>
-          <p>Loading orders...</p>
-        </div>
-      </CustomerLayout>
+      <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
+        <div style={{ fontSize: '48px', marginBottom: theme.spacing(2) }}>⏳</div>
+        <p>Loading orders...</p>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <CustomerLayout>
-        <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
-          <p style={{ color: theme.colors.error }}>{error}</p>
-          <Button onClick={loadOrders} style={{ marginTop: theme.spacing(2) }}>
-            Retry
-          </Button>
-        </div>
-      </CustomerLayout>
+      <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
+        <p style={{ color: theme.colors.error }}>{error}</p>
+        <Button onClick={loadOrders} style={{ marginTop: theme.spacing(2) }}>
+          Retry
+        </Button>
+      </div>
     );
   }
 
   return (
-    <CustomerLayout>
-      <div>
+    <div>
         <h1
           style={{
             fontSize: theme.font.size.xl,
@@ -203,7 +197,6 @@ const OrdersPage: React.FC = () => {
           </div>
         )}
       </div>
-    </CustomerLayout>
   );
 };
 

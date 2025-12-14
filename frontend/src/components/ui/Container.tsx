@@ -35,6 +35,7 @@ const Container: React.FC<ContainerProps> = ({
         margin: '0 auto',
         padding: padding ? theme.spacing(2) : 0,
         width: '100%',
+        boxSizing: 'border-box', // Include padding in width calculation
         ...style,
       }}
     >

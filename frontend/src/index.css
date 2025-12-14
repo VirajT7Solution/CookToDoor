@@ -24,10 +24,15 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  /* Remove display: flex and place-items: center to prevent layout issues */
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  /* Remove max-width and padding constraints from here */
 }
 
 h1 {

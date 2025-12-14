@@ -63,10 +63,12 @@ const DeliveryLayout: React.FC<DeliveryLayoutProps> = ({ children }) => {
   return (
     <div
       style={{
-        minHeight: '100vh',
+        height: '100vh', // Use fixed height instead of minHeight
         display: 'flex',
         flexDirection: 'column',
         backgroundColor: theme.colors.light,
+        overflow: 'hidden', // Prevent body scroll
+        width: '100%', // Ensure full width
       }}
     >
       {/* Top Navigation Bar */}
@@ -79,8 +81,7 @@ const DeliveryLayout: React.FC<DeliveryLayoutProps> = ({ children }) => {
           justifyContent: 'space-between',
           alignItems: 'center',
           boxShadow: theme.shadow.sm,
-          position: 'sticky',
-          top: 0,
+          flexShrink: 0, // Prevent header from shrinking
           zIndex: 100,
         }}
       >
@@ -122,7 +123,7 @@ const DeliveryLayout: React.FC<DeliveryLayoutProps> = ({ children }) => {
         </Button>
       </div>
 
-      <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
+      <div style={{ display: 'flex', flex: 1, minHeight: 0, overflow: 'hidden' }}>
         {/* Sidebar Navigation (Desktop) */}
         {!isMobile && (
           <div
@@ -134,6 +135,8 @@ const DeliveryLayout: React.FC<DeliveryLayoutProps> = ({ children }) => {
               display: 'flex',
               flexDirection: 'column',
               gap: theme.spacing(1),
+              flexShrink: 0, // Prevent sidebar from shrinking
+              overflowY: 'auto', // Allow sidebar to scroll if needed
             }}
           >
             {navItems.map((item) => (
@@ -175,7 +178,15 @@ const DeliveryLayout: React.FC<DeliveryLayoutProps> = ({ children }) => {
         )}
 
         {/* Main Content */}
-        <div style={{ flex: 1, overflow: 'auto' }}>{children}</div>
+        <div style={{ 
+          flex: 1, 
+          overflowY: 'auto', // Only vertical scroll
+          overflowX: 'hidden', // Prevent horizontal scroll
+          minHeight: 0, // Important for flexbox
+          width: '100%', // Ensure full width
+        }}>
+          {children}
+        </div>
       </div>
 
       {/* Bottom Navigation (Mobile) */}
@@ -228,7 +239,7 @@ const DeliveryLayout: React.FC<DeliveryLayoutProps> = ({ children }) => {
       )}
 
       {/* Spacer for mobile bottom nav */}
-      {isMobile && <div style={{ height: '80px' }} />}
+      {isMobile && <div style={{ height: '80px', flexShrink: 0 }} />}
     </div>
   );
 };

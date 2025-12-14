@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTheme } from '../../hooks/useTheme';
-import CustomerLayout from '../../layouts/CustomerLayout';
 import MenuItemCard from '../../components/customer/MenuItemCard';
 import CategoryFilter from '../../components/customer/CategoryFilter';
 import { customerApi } from '../../api/customerApi';
@@ -21,6 +20,16 @@ const CustomerHomePage: React.FC = () => {
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Load categories
   useEffect(() => {
@@ -114,54 +123,129 @@ const CustomerHomePage: React.FC = () => {
   const featuredItems = menuItems.slice(0, 5);
 
   return (
-    <CustomerLayout>
-      <div>
+    <div style={{ 
+      width: '100%', 
+      maxWidth: isMobile ? '100%' : '1400px',
+      margin: '0 auto',
+      padding: isMobile ? `0 ${theme.spacing(2)}` : `0 ${theme.spacing(4)}`,
+      boxSizing: 'border-box',
+    }}>
         {/* Welcome Section */}
-        <div style={{ marginBottom: theme.spacing(4) }}>
-          <h1
-            style={{
-              fontSize: theme.font.size.xl,
-              fontWeight: theme.font.weight.bold,
-              color: theme.colors.dark,
-              marginBottom: theme.spacing(1),
-            }}
-          >
-            Welcome to CookToDoor
-          </h1>
-          <p
-            style={{
-              fontSize: theme.font.size.base,
-              color: theme.colors.textSecondary,
-            }}
-          >
-            Discover delicious food from local chefs
-          </p>
+        <div 
+          style={{ 
+            marginBottom: theme.spacing(6),
+            padding: theme.spacing(5),
+            background: `linear-gradient(135deg, ${theme.colors.primary}15 0%, ${theme.colors.primaryLight}08 50%, ${theme.colors.white} 100%)`,
+            borderRadius: theme.radius.xl,
+            border: `1px solid ${theme.colors.primary}20`,
+            position: 'relative',
+            overflow: 'hidden',
+          }}
+        >
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: theme.spacing(2), marginBottom: theme.spacing(2) }}>
+              <span style={{ fontSize: '48px' }}>👋</span>
+              <h1
+                style={{
+                  fontSize: theme.font.size['3xl'],
+                  fontWeight: theme.font.weight.bold,
+                  background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.primaryDark} 100%)`,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  margin: 0,
+                  lineHeight: 1.2,
+                }}
+              >
+                Welcome to CookToDoor
+              </h1>
+            </div>
+            <p
+              style={{
+                fontSize: theme.font.size.lg,
+                color: theme.colors.textSecondary,
+                fontWeight: theme.font.weight.medium,
+                margin: 0,
+                paddingLeft: theme.spacing(7),
+              }}
+            >
+              Discover delicious food from local chefs 🍽️
+            </p>
+          </div>
         </div>
 
         {/* Search Bar */}
-        <div style={{ marginBottom: theme.spacing(3) }}>
-          <Input
-            placeholder="Search for food items..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            fullWidth
-            leftIcon={<span>🔍</span>}
-          />
+        <div style={{ 
+          marginBottom: theme.spacing(5),
+          position: 'relative',
+        }}>
+          <div style={{
+            position: 'relative',
+          }}>
+            <div style={{
+              position: 'relative',
+              width: '100%',
+            }}>
+              <div style={{
+                position: 'absolute',
+                left: theme.spacing(3),
+                top: '50%',
+                transform: 'translateY(-50%)',
+                zIndex: 2,
+                fontSize: '20px',
+                display: 'flex',
+                alignItems: 'center',
+              }}>
+                🔍
+              </div>
+              <input
+                placeholder="Search for food items..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: `${theme.spacing(2)} ${theme.spacing(4)}`,
+                  paddingLeft: theme.spacing(5),
+                  fontSize: theme.font.size.base,
+                  fontFamily: theme.font.family,
+                  color: theme.colors.text,
+                  backgroundColor: theme.colors.white,
+                  border: `2px solid ${theme.colors.primary}`,
+                  borderRadius: theme.radius.xl,
+                  boxShadow: theme.shadow.md,
+                  transition: theme.transitions.base,
+                  outline: 'none',
+                  boxSizing: 'border-box',
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = theme.colors.primaryDark;
+                  e.currentTarget.style.boxShadow = theme.shadow.lg;
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = theme.colors.primary;
+                  e.currentTarget.style.boxShadow = theme.shadow.md;
+                }}
+              />
+            </div>
+          </div>
         </div>
 
         {/* Category Filter */}
         {categories.length > 0 && (
-          <div style={{ marginBottom: theme.spacing(4) }}>
-            <h2
-              style={{
-                fontSize: theme.font.size.base,
-                fontWeight: theme.font.weight.semibold,
-                color: theme.colors.text,
-                marginBottom: theme.spacing(2),
-              }}
-            >
-              Choose Category
-            </h2>
+          <div style={{ marginBottom: theme.spacing(5) }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: theme.spacing(1.5), marginBottom: theme.spacing(3) }}>
+              <span style={{ fontSize: '24px' }}>🏷️</span>
+              <h2
+                style={{
+                  fontSize: theme.font.size.xl,
+                  fontWeight: theme.font.weight.bold,
+                  color: theme.colors.dark,
+                  margin: 0,
+                }}
+              >
+                Choose Category
+              </h2>
+            </div>
             <CategoryFilter
               categories={categories}
               selectedCategoryId={selectedCategoryId}
@@ -172,17 +256,28 @@ const CustomerHomePage: React.FC = () => {
 
         {/* Today's Best Food - Horizontal Scroll */}
         {!debouncedSearchQuery && !selectedCategoryId && featuredItems.length > 0 && (
-          <div style={{ marginBottom: theme.spacing(4) }}>
-            <h2
-              style={{
-                fontSize: theme.font.size.base,
-                fontWeight: theme.font.weight.semibold,
-                color: theme.colors.text,
-                marginBottom: theme.spacing(2),
-              }}
-            >
-              Today's Best Food
-            </h2>
+          <div style={{ marginBottom: theme.spacing(6) }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: theme.spacing(2), marginBottom: theme.spacing(3) }}>
+              <div style={{
+                width: '4px',
+                height: '32px',
+                background: `linear-gradient(180deg, ${theme.colors.primary} 0%, ${theme.colors.primaryLight} 100%)`,
+                borderRadius: theme.radius.full,
+              }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: theme.spacing(1.5) }}>
+                <span style={{ fontSize: '28px' }}>⭐</span>
+                <h2
+                  style={{
+                    fontSize: theme.font.size.xl,
+                    fontWeight: theme.font.weight.bold,
+                    color: theme.colors.dark,
+                    margin: 0,
+                  }}
+                >
+                  Today's Best Food
+                </h2>
+              </div>
+            </div>
             <div
               style={{
                 display: 'flex',
@@ -191,6 +286,7 @@ const CustomerHomePage: React.FC = () => {
                 paddingBottom: theme.spacing(1),
                 scrollbarWidth: 'none',
                 msOverflowStyle: 'none',
+                width: '100%',
               }}
               className="horizontal-scroll"
             >
@@ -200,6 +296,7 @@ const CustomerHomePage: React.FC = () => {
                   style={{
                     minWidth: '280px',
                     maxWidth: '280px',
+                    flexShrink: 0,
                   }}
                 >
                   <MenuItemCard item={item} />
@@ -209,6 +306,14 @@ const CustomerHomePage: React.FC = () => {
                 .horizontal-scroll::-webkit-scrollbar {
                   display: none;
                 }
+                @keyframes shimmer {
+                  0% {
+                    background-position: -200% 0;
+                  }
+                  100% {
+                    background-position: 200% 0;
+                  }
+                }
               `}</style>
             </div>
           </div>
@@ -216,23 +321,50 @@ const CustomerHomePage: React.FC = () => {
 
         {/* Menu Items Grid */}
         <div>
-          <h2
-            style={{
-              fontSize: theme.font.size.base,
-              fontWeight: theme.font.weight.semibold,
-              color: theme.colors.text,
-              marginBottom: theme.spacing(2),
-            }}
-          >
-            {debouncedSearchQuery ? 'Search Results' : selectedCategoryId ? 'Category Items' : 'All Items'}
-          </h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: theme.spacing(2), marginBottom: theme.spacing(4) }}>
+            <div style={{
+              width: '4px',
+              height: '32px',
+              background: `linear-gradient(180deg, ${theme.colors.primary} 0%, ${theme.colors.primaryLight} 100%)`,
+              borderRadius: theme.radius.full,
+            }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: theme.spacing(1.5) }}>
+              <span style={{ fontSize: '24px' }}>
+                {debouncedSearchQuery ? '🔍' : selectedCategoryId ? '📂' : '🍽️'}
+              </span>
+              <h2
+                style={{
+                  fontSize: theme.font.size.xl,
+                  fontWeight: theme.font.weight.bold,
+                  color: theme.colors.dark,
+                  margin: 0,
+                }}
+              >
+                {debouncedSearchQuery ? 'Search Results' : selectedCategoryId ? 'Category Items' : 'All Items'}
+              </h2>
+              {menuItems.length > 0 && (
+                <span style={{
+                  fontSize: theme.font.size.sm,
+                  color: theme.colors.textSecondary,
+                  fontWeight: theme.font.weight.medium,
+                  backgroundColor: theme.colors.light,
+                  padding: `${theme.spacing(0.5)} ${theme.spacing(1.5)}`,
+                  borderRadius: theme.radius.full,
+                  marginLeft: theme.spacing(1),
+                }}>
+                  {menuItems.length} {menuItems.length === 1 ? 'item' : 'items'}
+                </span>
+              )}
+            </div>
+          </div>
 
           {isLoading ? (
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
                 gap: theme.spacing(3),
+                width: '100%',
               }}
             >
               {[...Array(6)].map((_, i) => (
@@ -240,8 +372,10 @@ const CustomerHomePage: React.FC = () => {
                   key={i}
                   style={{
                     height: '350px',
-                    backgroundColor: theme.colors.light,
+                    background: `linear-gradient(90deg, ${theme.colors.light} 25%, ${theme.colors.white} 50%, ${theme.colors.light} 75%)`,
+                    backgroundSize: '200% 100%',
                     borderRadius: theme.radius.lg,
+                    animation: 'shimmer 1.5s infinite',
                   }}
                 />
               ))}
@@ -249,34 +383,46 @@ const CustomerHomePage: React.FC = () => {
           ) : error ? (
             <div
               style={{
-                padding: theme.spacing(4),
+                padding: theme.spacing(6),
                 textAlign: 'center',
-                color: theme.colors.error,
+                backgroundColor: `${theme.colors.error}10`,
+                borderRadius: theme.radius.xl,
+                border: `1px solid ${theme.colors.error}30`,
               }}
             >
-              {error}
+              <div style={{ fontSize: '48px', marginBottom: theme.spacing(2) }}>😕</div>
+              <p style={{ fontSize: theme.font.size.lg, color: theme.colors.error, fontWeight: theme.font.weight.semibold, marginBottom: theme.spacing(1) }}>
+                Oops! Something went wrong
+              </p>
+              <p style={{ color: theme.colors.textSecondary }}>{error}</p>
             </div>
           ) : menuItems.length === 0 ? (
             <div
               style={{
-                padding: theme.spacing(6),
+                padding: theme.spacing(8),
                 textAlign: 'center',
-                color: theme.colors.textSecondary,
+                backgroundColor: theme.colors.light,
+                borderRadius: theme.radius.xl,
+                border: `2px dashed ${theme.colors.border}`,
               }}
             >
-              <p style={{ fontSize: theme.font.size.lg, marginBottom: theme.spacing(2) }}>
+              <div style={{ fontSize: '64px', marginBottom: theme.spacing(3) }}>🔍</div>
+              <p style={{ fontSize: theme.font.size.xl, fontWeight: theme.font.weight.bold, color: theme.colors.dark, marginBottom: theme.spacing(1) }}>
                 No items found
               </p>
-              <p>Try searching with different keywords or browse categories</p>
+              <p style={{ fontSize: theme.font.size.base, color: theme.colors.textSecondary }}>
+                Try searching with different keywords or browse categories
+              </p>
             </div>
           ) : (
             <>
               <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
                   gap: theme.spacing(3),
                   marginBottom: theme.spacing(4),
+                  width: '100%',
                 }}
               >
                 {menuItems.map((item) => (
@@ -286,23 +432,40 @@ const CustomerHomePage: React.FC = () => {
 
               {/* Load More Button */}
               {hasMore && (
-                <div style={{ textAlign: 'center', marginTop: theme.spacing(4) }}>
+                <div style={{ textAlign: 'center', marginTop: theme.spacing(6) }}>
                   <button
                     onClick={handleLoadMore}
                     disabled={isLoadingMore}
                     style={{
-                      padding: `${theme.spacing(2)} ${theme.spacing(4)}`,
-                      backgroundColor: theme.colors.primary,
+                      padding: `${theme.spacing(2.5)} ${theme.spacing(6)}`,
+                      background: isLoadingMore 
+                        ? theme.colors.primary 
+                        : `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.primaryDark} 100%)`,
                       color: theme.colors.white,
                       border: 'none',
-                      borderRadius: theme.radius.md,
+                      borderRadius: theme.radius.full,
                       fontSize: theme.font.size.base,
-                      fontWeight: theme.font.weight.semibold,
+                      fontWeight: theme.font.weight.bold,
                       cursor: isLoadingMore ? 'not-allowed' : 'pointer',
                       opacity: isLoadingMore ? 0.6 : 1,
+                      boxShadow: isLoadingMore ? 'none' : theme.shadow.md,
+                      transition: theme.transitions.base,
+                      transform: isLoadingMore ? 'none' : 'scale(1)',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isLoadingMore) {
+                        e.currentTarget.style.transform = 'scale(1.05)';
+                        e.currentTarget.style.boxShadow = theme.shadow.lg;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isLoadingMore) {
+                        e.currentTarget.style.transform = 'scale(1)';
+                        e.currentTarget.style.boxShadow = theme.shadow.md;
+                      }
                     }}
                   >
-                    {isLoadingMore ? 'Loading...' : 'Load More'}
+                    {isLoadingMore ? '⏳ Loading...' : '📦 Load More Items'}
                   </button>
                 </div>
               )}
@@ -310,9 +473,7 @@ const CustomerHomePage: React.FC = () => {
           )}
         </div>
       </div>
-    </CustomerLayout>
   );
 };
 
 export default CustomerHomePage;
-

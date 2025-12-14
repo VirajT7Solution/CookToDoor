@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../hooks/useTheme';
-import CustomerLayout from '../../layouts/CustomerLayout';
 import AddressForm from '../../components/customer/AddressForm';
 import { customerApi } from '../../api/customerApi';
 import { userApi } from '../../api/userApi';
@@ -175,14 +174,12 @@ const CheckoutPage: React.FC = () => {
 
   if (!cart || cart.items.length === 0) {
     return (
-      <CustomerLayout>
-        <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
-          <p>Your cart is empty</p>
-          <Button onClick={() => navigate('/customer/home')} style={{ marginTop: theme.spacing(2) }}>
-            Browse Menu
-          </Button>
-        </div>
-      </CustomerLayout>
+      <div style={{ textAlign: 'center', padding: theme.spacing(6) }}>
+        <p>Your cart is empty</p>
+        <Button onClick={() => navigate('/customer/home')} style={{ marginTop: theme.spacing(2) }}>
+          Browse Menu
+        </Button>
+      </div>
     );
   }
 
@@ -191,8 +188,7 @@ const CheckoutPage: React.FC = () => {
   const total = subtotal + tax + DELIVERY_FEE;
 
   return (
-    <CustomerLayout>
-      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+    <div style={{ width: '100%', maxWidth: '100%' }}>
         <h1
           style={{
             fontSize: theme.font.size.xl,
@@ -407,7 +403,6 @@ const CheckoutPage: React.FC = () => {
           )}
         </Card>
       </div>
-    </CustomerLayout>
   );
 };
 
