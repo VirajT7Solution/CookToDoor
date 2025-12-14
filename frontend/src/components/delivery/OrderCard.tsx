@@ -9,6 +9,7 @@ interface OrderCardProps {
   onViewDetails: () => void;
   onAccept?: () => void;
   onPickup?: () => void;
+  onDeliver?: () => void;
   showActions?: boolean;
 }
 
@@ -17,6 +18,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
   onViewDetails,
   onAccept,
   onPickup,
+  onDeliver,
   showActions = false,
 }) => {
   const theme = useTheme();
@@ -151,18 +153,65 @@ const OrderCard: React.FC<OrderCardProps> = ({
           marginTop: theme.spacing(2),
         }}
       >
-        <Button variant="outline" size="sm" onClick={onViewDetails} style={{ flex: 1 }}>
-          View Details
-        </Button>
-        {showActions && onAccept && order.orderStatus === 'READY' && !order.deliveryPartnerId && (
-          <Button variant="primary" size="sm" onClick={onAccept} style={{ flex: 1 }}>
-            Accept Order
-          </Button>
-        )}
-        {showActions && onPickup && order.orderStatus === 'READY' && order.deliveryPartnerId && (
-          <Button variant="primary" size="sm" onClick={onPickup} style={{ flex: 1 }}>
-            Pickup Order
-          </Button>
+        {showActions && onDeliver && order.orderStatus === 'OUT_FOR_DELIVERY' ? (
+          <>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={onViewDetails}
+              style={{
+                flex: 1,
+                backgroundColor: 'rgb(243, 106, 16)',
+                borderColor: 'rgb(243, 106, 16)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgb(218, 95, 14)';
+                e.currentTarget.style.borderColor = 'rgb(218, 95, 14)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgb(243, 106, 16)';
+                e.currentTarget.style.borderColor = 'rgb(243, 106, 16)';
+              }}
+            >
+              View Order
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={onDeliver}
+              style={{
+                flex: 1,
+                backgroundColor: 'rgb(243, 106, 16)',
+                borderColor: 'rgb(243, 106, 16)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgb(218, 95, 14)';
+                e.currentTarget.style.borderColor = 'rgb(218, 95, 14)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgb(243, 106, 16)';
+                e.currentTarget.style.borderColor = 'rgb(243, 106, 16)';
+              }}
+            >
+              Deliver Order
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button variant="outline" size="sm" onClick={onViewDetails} style={{ flex: 1 }}>
+              View Details
+            </Button>
+            {showActions && onAccept && order.orderStatus === 'READY' && !order.deliveryPartnerId && (
+              <Button variant="primary" size="sm" onClick={onAccept} style={{ flex: 1 }}>
+                Accept Order
+              </Button>
+            )}
+            {showActions && onPickup && order.orderStatus === 'READY' && order.deliveryPartnerId && (
+              <Button variant="primary" size="sm" onClick={onPickup} style={{ flex: 1 }}>
+                Pickup Order
+              </Button>
+            )}
+          </>
         )}
       </div>
     </Card>

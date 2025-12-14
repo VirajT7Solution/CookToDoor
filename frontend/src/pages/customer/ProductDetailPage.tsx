@@ -359,32 +359,109 @@ const ProductDetailPage: React.FC = () => {
             </label>
             <div style={{ display: 'flex', alignItems: 'center', gap: theme.spacing(2) }}>
               <button
-                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setQuantity((q) => Math.max(1, q - 1));
+                }}
+                disabled={quantity <= 1}
                 style={{
                   width: '40px',
                   height: '40px',
                   borderRadius: theme.radius.md,
-                  border: `1px solid ${theme.colors.border}`,
-                  backgroundColor: theme.colors.white,
-                  cursor: 'pointer',
-                  fontSize: theme.font.size.xl,
+                  border: `2px solid ${quantity <= 1 ? theme.colors.border : 'rgb(243, 106, 16)'}`,
+                  backgroundColor: quantity <= 1 ? theme.colors.light : theme.colors.white,
+                  color: quantity <= 1 ? theme.colors.textSecondary : 'rgb(243, 106, 16)',
+                  cursor: quantity <= 1 ? 'not-allowed' : 'pointer',
+                  fontSize: '24px',
+                  fontWeight: theme.font.weight.bold,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: theme.transitions.base,
+                  userSelect: 'none',
+                }}
+                onMouseEnter={(e) => {
+                  if (quantity > 1) {
+                    e.currentTarget.style.backgroundColor = 'rgb(243, 106, 16)';
+                    e.currentTarget.style.color = theme.colors.white;
+                    e.currentTarget.style.borderColor = 'rgb(243, 106, 16)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (quantity > 1) {
+                    e.currentTarget.style.backgroundColor = theme.colors.white;
+                    e.currentTarget.style.color = 'rgb(243, 106, 16)';
+                    e.currentTarget.style.borderColor = 'rgb(243, 106, 16)';
+                  }
                 }}
               >
                 −
               </button>
-              <span style={{ minWidth: '40px', textAlign: 'center', fontWeight: theme.font.weight.semibold }}>
-                {quantity}
-              </span>
+              <input
+                type="number"
+                min="1"
+                max={item.maxQuantity || 10}
+                value={quantity}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value) || 1;
+                  setQuantity(Math.max(1, Math.min(item.maxQuantity || 10, val)));
+                }}
+                style={{
+                  width: '60px',
+                  height: '40px',
+                  textAlign: 'center',
+                  border: `2px solid ${theme.colors.border}`,
+                  borderRadius: theme.radius.md,
+                  fontSize: theme.font.size.base,
+                  fontWeight: theme.font.weight.semibold,
+                  outline: 'none',
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'rgb(243, 106, 16)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = theme.colors.border;
+                }}
+              />
               <button
-                onClick={() => setQuantity((q) => Math.min(item.maxQuantity || 10, q + 1))}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setQuantity((q) => Math.min(item.maxQuantity || 10, q + 1));
+                }}
+                disabled={quantity >= (item.maxQuantity || 10)}
                 style={{
                   width: '40px',
                   height: '40px',
                   borderRadius: theme.radius.md,
-                  border: `1px solid ${theme.colors.border}`,
-                  backgroundColor: theme.colors.white,
-                  cursor: 'pointer',
-                  fontSize: theme.font.size.xl,
+                  border: `2px solid ${quantity >= (item.maxQuantity || 10) ? theme.colors.border : 'rgb(243, 106, 16)'}`,
+                  backgroundColor: quantity >= (item.maxQuantity || 10) ? theme.colors.light : theme.colors.white,
+                  color: quantity >= (item.maxQuantity || 10) ? theme.colors.textSecondary : 'rgb(243, 106, 16)',
+                  cursor: quantity >= (item.maxQuantity || 10) ? 'not-allowed' : 'pointer',
+                  fontSize: '24px',
+                  fontWeight: theme.font.weight.bold,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: theme.transitions.base,
+                  userSelect: 'none',
+                }}
+                onMouseEnter={(e) => {
+                  if (quantity < (item.maxQuantity || 10)) {
+                    e.currentTarget.style.backgroundColor = 'rgb(243, 106, 16)';
+                    e.currentTarget.style.color = theme.colors.white;
+                    e.currentTarget.style.borderColor = 'rgb(243, 106, 16)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (quantity < (item.maxQuantity || 10)) {
+                    e.currentTarget.style.backgroundColor = theme.colors.white;
+                    e.currentTarget.style.color = 'rgb(243, 106, 16)';
+                    e.currentTarget.style.borderColor = 'rgb(243, 106, 16)';
+                  }
                 }}
               >
                 +
@@ -495,6 +572,5 @@ const ProductDetailPage: React.FC = () => {
 };
 
 export default ProductDetailPage;
-
 
 

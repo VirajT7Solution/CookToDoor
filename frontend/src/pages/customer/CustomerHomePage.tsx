@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTheme } from '../../hooks/useTheme';
+import { useAuth } from '../../hooks/useAuth';
 import MenuItemCard from '../../components/customer/MenuItemCard';
 import CategoryFilter from '../../components/customer/CategoryFilter';
 import { customerApi } from '../../api/customerApi';
 import { categoryApi } from '../../api/categoryApi';
-import type { CustomerMenuItem } from '../../types/customer.types';
+import type { CustomerMenuItem, Customer } from '../../types/customer.types';
 import type { Category } from '../../types/menuItem.types';
-import Input from '../../components/ui/Input';
 
 const CustomerHomePage: React.FC = () => {
   const theme = useTheme();
+  const { userId, username } = useAuth();
   const [menuItems, setMenuItems] = useState<CustomerMenuItem[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | undefined>();
@@ -21,6 +22,8 @@ const CustomerHomePage: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [customer, setCustomer] = useState<Customer | null>(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -30,6 +33,24 @@ const CustomerHomePage: React.FC = () => {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // Load customer profile
+  useEffect(() => {
+    const loadCustomerProfile = async () => {
+      if (!userId) return;
+      try {
+        setIsLoadingProfile(true);
+        const customerData = await customerApi.getCustomerByUserId(userId);
+        setCustomer(customerData);
+      } catch (err: any) {
+        console.error('Failed to load customer profile:', err);
+        // If customer profile doesn't exist, that's okay - we'll just use username
+      } finally {
+        setIsLoadingProfile(false);
+      }
+    };
+    loadCustomerProfile();
+  }, [userId]);
 
   // Load categories
   useEffect(() => {
@@ -133,8 +154,8 @@ const CustomerHomePage: React.FC = () => {
         {/* Welcome Section */}
         <div 
           style={{ 
-            marginBottom: theme.spacing(6),
-            padding: theme.spacing(5),
+            marginBottom: isMobile ? theme.spacing(4) : theme.spacing(6),
+            padding: isMobile ? theme.spacing(3) : theme.spacing(5),
             background: `linear-gradient(135deg, ${theme.colors.primary}15 0%, ${theme.colors.primaryLight}08 50%, ${theme.colors.white} 100%)`,
             borderRadius: theme.radius.xl,
             border: `1px solid ${theme.colors.primary}20`,
@@ -143,11 +164,21 @@ const CustomerHomePage: React.FC = () => {
           }}
         >
           <div style={{ position: 'relative', zIndex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: theme.spacing(2), marginBottom: theme.spacing(2) }}>
-              <span style={{ fontSize: '48px' }}>👋</span>
+            <div style={{ 
+              display: 'flex', 
+              alignItems: isMobile ? 'flex-start' : 'center', 
+              gap: isMobile ? theme.spacing(1.5) : theme.spacing(2), 
+              marginBottom: isMobile ? theme.spacing(1.5) : theme.spacing(2),
+              flexWrap: isMobile ? 'wrap' : 'nowrap',
+            }}>
+              <span style={{ 
+                fontSize: isMobile ? '36px' : '48px',
+                flexShrink: 0,
+                lineHeight: 1,
+              }}>👋</span>
               <h1
                 style={{
-                  fontSize: theme.font.size['3xl'],
+                  fontSize: isMobile ? theme.font.size.xl : theme.font.size['3xl'],
                   fontWeight: theme.font.weight.bold,
                   background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.primaryDark} 100%)`,
                   WebkitBackgroundClip: 'text',
@@ -155,18 +186,29 @@ const CustomerHomePage: React.FC = () => {
                   backgroundClip: 'text',
                   margin: 0,
                   lineHeight: 1.2,
+                  flex: 1,
+                  wordBreak: 'break-word',
                 }}
-              >
-                Welcome to CookToDoor
-              </h1>
+                >
+                  {isLoadingProfile ? (
+                    'Welcome to CookToDoor'
+                  ) : customer?.fullName ? (
+                    `Welcome, ${customer.fullName}!`
+                  ) : username ? (
+                    `Welcome, ${username}!`
+                  ) : (
+                    'Welcome to CookToDoor'
+                  )}
+                </h1>
             </div>
             <p
               style={{
-                fontSize: theme.font.size.lg,
+                fontSize: isMobile ? theme.font.size.base : theme.font.size.lg,
                 color: theme.colors.textSecondary,
                 fontWeight: theme.font.weight.medium,
                 margin: 0,
-                paddingLeft: theme.spacing(7),
+                paddingLeft: isMobile ? theme.spacing(5.5) : theme.spacing(7),
+                lineHeight: 1.5,
               }}
             >
               Discover delicious food from local chefs 🍽️

@@ -62,6 +62,11 @@ const DeliveryDashboardPage: React.FC = () => {
     }
   };
 
+  const handleDeliverOrder = (order: Order) => {
+    // Open the order detail modal which has the OTP delivery functionality
+    setSelectedOrder(order);
+  };
+
   const getDisplayOrders = (): Order[] => {
     if (activeTab === 'available') {
       return availableOrders;
@@ -251,6 +256,11 @@ const DeliveryDashboardPage: React.FC = () => {
                 onPickup={
                   activeTab === 'my-orders' && order.orderStatus === 'READY'
                     ? () => handlePickupOrder(order.id)
+                    : undefined
+                }
+                onDeliver={
+                  activeTab === 'my-orders' && order.orderStatus === 'OUT_FOR_DELIVERY'
+                    ? () => handleDeliverOrder(order)
                     : undefined
                 }
                 showActions={activeTab === 'available' || activeTab === 'my-orders'}

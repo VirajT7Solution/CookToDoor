@@ -328,16 +328,38 @@ const DeliveryProfilePage: React.FC = () => {
               </p>
             </div>
 
-            <Button
-              type="submit"
-              variant="primary"
-              fullWidth
-              size="lg"
-              isLoading={isLoading}
-              style={{ marginTop: theme.spacing(2) }}
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginTop: theme.spacing(2),
+              }}
             >
-              Update Profile
-            </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                isLoading={isLoading}
+                style={{
+                  backgroundColor: 'rgb(243, 106, 16)',
+                  borderColor: 'rgb(243, 106, 16)',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isLoading) {
+                    e.currentTarget.style.backgroundColor = 'rgb(218, 95, 14)'; // Darker shade on hover
+                    e.currentTarget.style.borderColor = 'rgb(218, 95, 14)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isLoading) {
+                    e.currentTarget.style.backgroundColor = 'rgb(243, 106, 16)';
+                    e.currentTarget.style.borderColor = 'rgb(243, 106, 16)';
+                  }
+                }}
+              >
+                Update Profile
+              </Button>
+            </div>
           </form>
         </Card>
       </Container>
@@ -346,5 +368,4 @@ const DeliveryProfilePage: React.FC = () => {
 };
 
 export default DeliveryProfilePage;
-
 

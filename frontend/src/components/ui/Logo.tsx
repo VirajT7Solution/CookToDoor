@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTheme } from '../../hooks/useTheme';
 import { cn } from '../../utils';
+import logoImage from '../../assets/logo.png';
 
 export interface LogoProps {
   size?: 'sm' | 'md' | 'lg';
@@ -13,12 +14,12 @@ const Logo: React.FC<LogoProps> = ({ size = 'md', showText = true, className, on
   const theme = useTheme();
 
   const sizeMap = {
-    sm: { icon: 24, text: 16 },
-    md: { icon: 32, text: 20 },
-    lg: { icon: 48, text: 28 },
+    sm: { height: 40 },
+    md: { height: 60 },
+    lg: { height: 100 },
   };
 
-  const { icon: iconSize, text: textSize } = sizeMap[size];
+  const { height: imageHeight } = sizeMap[size];
 
   return (
     <div
@@ -26,42 +27,24 @@ const Logo: React.FC<LogoProps> = ({ size = 'md', showText = true, className, on
       onClick={onClick}
       style={{
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
-        gap: theme.spacing(1),
+        gap: theme.spacing(0.5),
         cursor: onClick ? 'pointer' : 'default',
         userSelect: 'none',
       }}
     >
-      {/* Logo Icon - Orange Circle with Fork/Knife Icon */}
-      <svg
-        width={iconSize}
-        height={iconSize}
-        viewBox="0 0 48 48"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <circle cx="24" cy="24" r="24" fill={theme.colors.primary} />
-        <path
-          d="M24 14V34M18 20H30M18 28H30"
-          stroke={theme.colors.white}
-          strokeWidth="2.5"
-          strokeLinecap="round"
-        />
-        <circle cx="20" cy="18" r="2" fill={theme.colors.white} />
-        <circle cx="28" cy="18" r="2" fill={theme.colors.white} />
-      </svg>
-      {showText && (
-        <span
-          style={{
-            fontSize: textSize,
-            fontWeight: theme.font.weight.bold,
-            color: theme.colors.dark,
-            letterSpacing: '-0.5px',
-          }}
-        >
-          CookToDoor
-        </span>
-      )}
+      {/* Logo Image - Contains full logo with van icon, text and tagline */}
+      <img
+        src={logoImage}
+        alt="CookToDoor Logo"
+        style={{
+          height: imageHeight,
+          width: 'auto',
+          objectFit: 'contain',
+          maxWidth: '100%',
+        }}
+      />
     </div>
   );
 };

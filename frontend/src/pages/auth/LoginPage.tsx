@@ -139,29 +139,29 @@ const LoginPage: React.FC = () => {
 
           {/* Right side - Form */}
           <div>
-            {/* Mobile/Tablet Header */}
-            {!isDesktop && (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  marginBottom: theme.spacing(4),
-                }}
-              >
-                <Logo size="lg" />
-                <p
-                  style={{
-                    fontSize: theme.font.size.base,
-                    color: theme.colors.textSecondary,
-                    textAlign: 'center',
-                    marginTop: theme.spacing(1),
-                  }}
-                >
-                  Welcome back! Please login to continue
-                </p>
-              </div>
-            )}
+             {/* Mobile/Tablet Header */}
+             {!isDesktop && (
+               <div
+                 style={{
+                   display: 'flex',
+                   flexDirection: 'column',
+                   alignItems: 'center',
+                   marginBottom: theme.spacing(4),
+                 }}
+               >
+                 <Logo size="lg" />
+                 <p
+                   style={{
+                     fontSize: theme.font.size.base,
+                     color: theme.colors.textSecondary,
+                     textAlign: 'center',
+                     marginTop: theme.spacing(1),
+                   }}
+                 >
+                   Welcome back! Please login to continue
+                 </p>
+               </div>
+             )}
             <LoginForm />
           </div>
         </div>

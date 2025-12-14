@@ -143,15 +143,42 @@ const AddressForm: React.FC<AddressFormProps> = ({
         maxLength={10}
       />
 
-      <Button
-        type="submit"
-        variant="primary"
-        fullWidth
-        isLoading={isLoading}
-        style={{ marginTop: theme.spacing(2) }}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: theme.spacing(3),
+        }}
       >
-        {submitLabel}
-      </Button>
+        <Button
+          type="submit"
+          variant="primary"
+          size="lg"
+          isLoading={isLoading}
+          style={{
+            backgroundColor: 'rgb(243, 106, 16)',
+            borderColor: 'rgb(243, 106, 16)',
+            fontSize: theme.font.size.base,
+            fontWeight: theme.font.weight.semibold,
+            padding: `${theme.spacing(2)} ${theme.spacing(4)}`,
+            boxShadow: theme.shadow.md,
+          }}
+          onMouseEnter={(e) => {
+            if (!isLoading) {
+              e.currentTarget.style.backgroundColor = 'rgb(218, 95, 14)';
+              e.currentTarget.style.borderColor = 'rgb(218, 95, 14)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isLoading) {
+              e.currentTarget.style.backgroundColor = 'rgb(243, 106, 16)';
+              e.currentTarget.style.borderColor = 'rgb(243, 106, 16)';
+            }
+          }}
+        >
+          {submitLabel}
+        </Button>
+      </div>
     </form>
   );
 };

@@ -4,6 +4,10 @@ import { useAuth } from '../hooks/useAuth';
 import { useCartStore } from '../store/cartStore';
 import { useTheme } from '../hooks/useTheme';
 import Logo from '../components/ui/Logo';
+import { customerApi } from '../api/customerApi';
+import { userApi } from '../api/userApi';
+import type { Customer, UserProfile } from '../types/customer.types';
+import axiosClient from '../api/axiosClient';
 
 interface CustomerLayoutProps {
   children: React.ReactNode;
@@ -12,10 +16,14 @@ interface CustomerLayoutProps {
 const CustomerLayout: React.FC<CustomerLayoutProps> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, userId, username } = useAuth();
   const cartItemCount = useCartStore((state) => state.getCartItemCount());
   const theme = useTheme();
   const [isMobile, setIsMobile] = useState(false);
+  const [customer, setCustomer] = useState<Customer | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -26,13 +34,49 @@ const CustomerLayout: React.FC<CustomerLayoutProps> = ({ children }) => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Load customer profile
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (!userId) return;
+      try {
+        setIsLoadingProfile(true);
+        const [userData, customerData] = await Promise.all([
+          userApi.getUser(userId).catch(() => null),
+          customerApi.getCustomerByUserId(userId).catch(() => null),
+        ]);
+        setUser(userData);
+        setCustomer(customerData);
+
+        // Load profile image if available
+        if (userData?.profileImageId) {
+          try {
+            const imageResponse = await axiosClient.get(`/images/view/${userData.profileImageId}`, {
+              responseType: 'blob',
+            });
+            const imageUrl = URL.createObjectURL(imageResponse.data);
+            setProfileImageUrl(imageUrl);
+          } catch (err) {
+            console.error('Failed to load profile image:', err);
+          }
+        }
+      } catch (err: any) {
+        console.error('Failed to load profile:', err);
+      } finally {
+        setIsLoadingProfile(false);
+      }
+    };
+    loadProfile();
+  }, [userId]);
+
   const navItems = [
     { path: '/customer/home', label: 'Home', icon: '🏠' },
     { path: '/customer/orders', label: 'Orders', icon: '📦' },
     { path: '/customer/profile', label: 'Profile', icon: '👤' },
   ];
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+    return location.pathname === path || location.pathname.startsWith(path + '/');
+  };
 
   const handleLogout = () => {
     logout();
@@ -83,6 +127,82 @@ const CustomerLayout: React.FC<CustomerLayoutProps> = ({ children }) => {
               gap: theme.spacing(3),
             }}
           >
+            {/* User Profile */}
+            <Link
+              to="/customer/profile"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: theme.spacing(1.5),
+                padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
+                textDecoration: 'none',
+                color: theme.colors.text,
+                borderRadius: theme.radius.full,
+                transition: theme.transitions.base,
+                border: `1px solid transparent`,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = theme.colors.light;
+                e.currentTarget.style.borderColor = theme.colors.primary;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.borderColor = 'transparent';
+              }}
+            >
+              {profileImageUrl ? (
+                <img
+                  src={profileImageUrl}
+                  alt="Profile"
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: theme.radius.full,
+                    objectFit: 'cover',
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: theme.radius.full,
+                    backgroundColor: theme.colors.primary,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: theme.colors.white,
+                    fontSize: theme.font.size.sm,
+                    fontWeight: theme.font.weight.bold,
+                  }}
+                >
+                  {isLoadingProfile ? (
+                    '⏳'
+                  ) : customer?.fullName ? (
+                    customer.fullName.charAt(0).toUpperCase()
+                  ) : username ? (
+                    username.charAt(0).toUpperCase()
+                  ) : (
+                    '👤'
+                  )}
+                </div>
+              )}
+              {!isMobile && (
+                <span
+                  style={{
+                    fontSize: theme.font.size.sm,
+                    fontWeight: theme.font.weight.medium,
+                    color: theme.colors.text,
+                  }}
+                >
+                  {isLoadingProfile
+                    ? 'Loading...'
+                    : customer?.fullName || username || 'User'}
+                </span>
+              )}
+            </Link>
+
+            {/* Cart Icon */}
             <Link
               to="/customer/cart"
               style={{
@@ -127,6 +247,8 @@ const CustomerLayout: React.FC<CustomerLayoutProps> = ({ children }) => {
                 </span>
               )}
             </Link>
+
+            {/* Logout Button */}
             <button
               onClick={handleLogout}
               style={{
@@ -157,23 +279,82 @@ const CustomerLayout: React.FC<CustomerLayoutProps> = ({ children }) => {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main
-        style={{
-          flex: 1,
-          width: '100%',
-          margin: '0 auto',
-          padding: `${theme.spacing(4)} ${isMobile ? theme.spacing(3) : theme.spacing(6)}`,
-          paddingBottom: isMobile ? `${theme.spacing(12)}` : theme.spacing(4),
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          minHeight: 0,
-          boxSizing: 'border-box',
-          backgroundColor: theme.colors.light,
-        }}
-      >
-        {children}
-      </main>
+      {/* Main Content Area with Sidebar */}
+      <div style={{ display: 'flex', flex: 1, minHeight: 0, overflow: 'hidden' }}>
+        {/* Sidebar Navigation (Desktop) */}
+        {!isMobile && (
+          <div
+            style={{
+              width: '250px',
+              backgroundColor: theme.colors.white,
+              borderRight: `1px solid ${theme.colors.border}`,
+              padding: theme.spacing(4),
+              display: 'flex',
+              flexDirection: 'column',
+              gap: theme.spacing(1),
+              flexShrink: 0,
+              overflowY: 'auto',
+            }}
+          >
+            {navItems.map((item) => {
+              const active = isActive(item.path);
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  style={{
+                    textDecoration: 'none',
+                    padding: theme.spacing(2),
+                    borderRadius: theme.radius.md,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: theme.spacing(2),
+                    backgroundColor: active
+                      ? `${theme.colors.primary}10`
+                      : 'transparent',
+                    color: active ? theme.colors.primary : theme.colors.text,
+                    fontWeight: active
+                      ? theme.font.weight.semibold
+                      : theme.font.weight.normal,
+                    transition: theme.transitions.base,
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!active) {
+                      e.currentTarget.style.backgroundColor = theme.colors.light;
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!active) {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }
+                  }}
+                >
+                  <span style={{ fontSize: theme.font.size.lg }}>{item.icon}</span>
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Main Content */}
+        <main
+          style={{
+            flex: 1,
+            width: '100%',
+            margin: '0 auto',
+            padding: `${theme.spacing(4)} ${isMobile ? theme.spacing(3) : theme.spacing(6)}`,
+            paddingBottom: isMobile ? `${theme.spacing(12)}` : theme.spacing(4),
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            minHeight: 0,
+            boxSizing: 'border-box',
+            backgroundColor: theme.colors.light,
+          }}
+        >
+          {children}
+        </main>
+      </div>
 
       {/* Bottom Navigation - Only on Mobile */}
       {isMobile && (
