@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Modal from '../ui/Modal';
 import Button from '../ui/Button';
 import Card from '../ui/Card';
+import Select from '../ui/Select';
 import { useTheme } from '../../hooks/useTheme';
 import { orderApi } from '../../api/orderApi';
+import { providerApi } from '../../api/providerApi';
 import type { Order, OrderStatus } from '../../types/order.types';
+import type { DeliveryPartner } from '../../types/deliveryPartner.types';
 
 interface OrderDetailsModalProps {
   order: Order | null;
@@ -14,8 +18,32 @@ interface OrderDetailsModalProps {
 
 const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, onClose, onUpdate }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState<string>('');
+  const [showAssignModal, setShowAssignModal] = useState(false);
+  const [availablePartners, setAvailablePartners] = useState<DeliveryPartner[]>([]);
+  const [selectedPartnerId, setSelectedPartnerId] = useState<number | ''>('');
+  const [loadingPartners, setLoadingPartners] = useState(false);
+
+  useEffect(() => {
+    if (showAssignModal && order) {
+      loadAvailablePartners();
+    }
+  }, [showAssignModal, order]);
+
+  const loadAvailablePartners = async () => {
+    setLoadingPartners(true);
+    setError('');
+    try {
+      const partners = await providerApi.getAvailableDeliveryPartners();
+      setAvailablePartners(partners);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to load delivery partners');
+    } finally {
+      setLoadingPartners(false);
+    }
+  };
 
   if (!order) return null;
 
@@ -60,6 +88,27 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, onClose, o
     }
   };
 
+  const handleAssignDeliveryPartner = async () => {
+    if (!selectedPartnerId) {
+      setError('Please select a delivery partner');
+      return;
+    }
+
+    setIsUpdating(true);
+    setError('');
+    try {
+      await orderApi.assignDeliveryPartner(order.id, selectedPartnerId as number);
+      setShowAssignModal(false);
+      setSelectedPartnerId('');
+      onUpdate();
+      onClose();
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to assign delivery partner');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   const handleCancelOrder = async () => {
     if (!window.confirm('Are you sure you want to cancel this order?')) {
       return;
@@ -77,6 +126,12 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, onClose, o
       setIsUpdating(false);
     }
   };
+
+  const canAssignDeliveryPartner =
+    (order.orderStatus === 'CONFIRMED' ||
+      order.orderStatus === 'PREPARING' ||
+      order.orderStatus === 'READY') &&
+    !order.deliveryPartnerId;
 
   const getNextStatusButton = () => {
     switch (order.orderStatus) {
@@ -136,6 +191,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, onClose, o
   const canCancel = order.orderStatus === 'PENDING' || order.orderStatus === 'CONFIRMED';
 
   return (
+    <>
     <Modal isOpen={!!order} onClose={onClose} title={`Order #${order.id}`} size="lg">
       {error && (
         <div
@@ -340,7 +396,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, onClose, o
         </Card>
 
         {/* Delivery Partner Info */}
-        {order.deliveryPartnerName && (
+        {order.deliveryPartnerName ? (
           <div>
             <h3
               style={{
@@ -356,7 +412,30 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, onClose, o
               {order.deliveryPartnerName}
             </p>
           </div>
-        )}
+        ) : canAssignDeliveryPartner ? (
+          <div>
+            <h3
+              style={{
+                fontSize: theme.font.size.base,
+                fontWeight: theme.font.weight.semibold,
+                color: theme.colors.textSecondary,
+                marginBottom: theme.spacing(1),
+              }}
+            >
+              Delivery Partner
+            </h3>
+            <Button
+              variant="outline"
+              fullWidth
+              onClick={() => {
+                setShowAssignModal(true);
+                setError('');
+              }}
+            >
+              Assign Delivery Partner
+            </Button>
+          </div>
+        ) : null}
 
         {/* Action Buttons */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: theme.spacing(2) }}>
@@ -375,6 +454,94 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, onClose, o
         </div>
       </div>
     </Modal>
+
+    {/* Assign Delivery Partner Modal */}
+    <Modal
+        isOpen={showAssignModal}
+        onClose={() => {
+          setShowAssignModal(false);
+          setSelectedPartnerId('');
+          setError('');
+        }}
+        title="Assign Delivery Partner"
+        size="md"
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: theme.spacing(3) }}>
+          {loadingPartners ? (
+            <div style={{ textAlign: 'center', padding: theme.spacing(4) }}>
+              <div
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  border: `3px solid ${theme.colors.border}`,
+                  borderTopColor: theme.colors.primary,
+                  borderRadius: '50%',
+                  animation: 'spin 0.8s linear infinite',
+                  margin: '0 auto',
+                  marginBottom: theme.spacing(2),
+                }}
+              />
+              <p style={{ color: theme.colors.textSecondary }}>Loading delivery partners...</p>
+            </div>
+          ) : availablePartners.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: theme.spacing(4) }}>
+              <p style={{ color: theme.colors.textSecondary, marginBottom: theme.spacing(2) }}>
+                No available delivery partners. Please create one first.
+              </p>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowAssignModal(false);
+                  navigate('/provider/delivery-partners');
+                }}
+              >
+                Go to Delivery Partners
+              </Button>
+            </div>
+          ) : (
+            <>
+              <Select
+                label="Select Delivery Partner"
+                value={selectedPartnerId.toString()}
+                onChange={(e) => setSelectedPartnerId(Number(e.target.value))}
+                options={availablePartners.map((p) => ({
+                  value: p.id.toString(),
+                  label: `${p.fullName} (${p.vehicleType}) - ${p.serviceArea}`,
+                }))}
+                required
+              />
+              {error && (
+                <p style={{ color: theme.colors.error, fontSize: theme.font.size.sm, margin: 0 }}>
+                  {error}
+                </p>
+              )}
+              <div style={{ display: 'flex', gap: theme.spacing(2), marginTop: theme.spacing(2) }}>
+                <Button
+                  variant="outline"
+                  fullWidth
+                  onClick={() => {
+                    setShowAssignModal(false);
+                    setSelectedPartnerId('');
+                    setError('');
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  fullWidth
+                  onClick={handleAssignDeliveryPartner}
+                  isLoading={isUpdating}
+                  disabled={!selectedPartnerId}
+                >
+                  Assign
+                </Button>
+              </div>
+            </>
+          )}
+        </div>
+      </Modal>
+    </>
   );
 };
 

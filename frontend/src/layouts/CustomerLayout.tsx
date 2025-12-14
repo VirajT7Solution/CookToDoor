@@ -257,3 +257,4 @@ const CustomerLayout: React.FC<CustomerLayoutProps> = ({ children }) => {
 };
 
 export default CustomerLayout;
+

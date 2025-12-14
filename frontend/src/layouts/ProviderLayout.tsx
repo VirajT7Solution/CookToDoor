@@ -20,6 +20,7 @@ const navItems: NavItem[] = [
   { path: '/provider/dashboard', label: 'Dashboard', icon: '📊' },
   { path: '/provider/products', label: 'Products', icon: '📦' },
   { path: '/provider/orders', label: 'Orders', icon: '🛒' },
+  { path: '/provider/delivery-partners', label: 'Delivery Partners', icon: '🚚' },
   { path: '/provider/profile', label: 'Profile', icon: '👤' },
 ];
 

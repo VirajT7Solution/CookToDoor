@@ -1,4 +1,4 @@
-﻿import axiosClient from './axiosClient';
+import axiosClient from './axiosClient';
 import type { Order, UpdateOrderStatusRequest } from '../types/order.types';
 
 export const orderApi = {
@@ -101,6 +101,21 @@ export const orderApi = {
     const response = await axiosClient.post<{ valid: boolean; message: string }>(
       `/api/delivery-partners/orders/${id}/verify-otp`,
       { otp }
+    );
+    return response.data;
+  },
+
+  // ==================== Provider Order Assignment ====================
+
+  /**
+   * Assign delivery partner to order (Provider)
+   */
+  assignDeliveryPartner: async (
+    orderId: number,
+    deliveryPartnerId: number
+  ): Promise<Order> => {
+    const response = await axiosClient.post<Order>(
+      `/api/providers/orders/${orderId}/assign-delivery/${deliveryPartnerId}`
     );
     return response.data;
   },

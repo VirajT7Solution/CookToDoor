@@ -5,6 +5,11 @@ import type {
   ProviderDetailsResponse,
   ProviderDetailsGetResponse,
 } from '../types/provider.types';
+import type {
+  DeliveryPartner,
+  DeliveryPartnerCreateRequest,
+  DeliveryPartnerUpdateRequest,
+} from '../types/deliveryPartner.types';
 
 export const providerApi = {
   /**
@@ -38,5 +43,71 @@ export const providerApi = {
       data
     );
     return response.data;
+  },
+
+  // ==================== Delivery Partner Management ====================
+
+  /**
+   * Get all delivery partners for the current provider
+   */
+  getDeliveryPartners: async (): Promise<DeliveryPartner[]> => {
+    const response = await axiosClient.get<DeliveryPartner[]>(
+      '/api/providers/delivery-partners'
+    );
+    return response.data;
+  },
+
+  /**
+   * Get available delivery partners (isAvailable = true)
+   */
+  getAvailableDeliveryPartners: async (): Promise<DeliveryPartner[]> => {
+    const response = await axiosClient.get<DeliveryPartner[]>(
+      '/api/providers/delivery-partners/available'
+    );
+    return response.data;
+  },
+
+  /**
+   * Get delivery partner by ID
+   */
+  getDeliveryPartner: async (id: number): Promise<DeliveryPartner> => {
+    const response = await axiosClient.get<DeliveryPartner>(
+      `/api/providers/delivery-partners/${id}`
+    );
+    return response.data;
+  },
+
+  /**
+   * Create a new delivery partner
+   */
+  createDeliveryPartner: async (
+    data: DeliveryPartnerCreateRequest
+  ): Promise<DeliveryPartner> => {
+    const response = await axiosClient.post<DeliveryPartner>(
+      '/api/providers/delivery-partners',
+      data
+    );
+    return response.data;
+  },
+
+  /**
+   * Update delivery partner
+   */
+  updateDeliveryPartner: async (
+    id: number,
+    data: DeliveryPartnerUpdateRequest
+  ): Promise<DeliveryPartner> => {
+    const response = await axiosClient.put<DeliveryPartner>(
+      `/api/providers/delivery-partners/${id}`,
+      data
+    );
+    return response.data;
+  },
+
+  /**
+   * Delete delivery partner
+   */
+  deleteDeliveryPartner: async (id: number): Promise<void> => {
+    await axiosClient.delete(`/api/providers/delivery-partners/${id}`);
   },
 };

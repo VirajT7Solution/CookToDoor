@@ -11,6 +11,7 @@ import AddProductPage from './pages/provider/AddProductPage';
 import EditProductPage from './pages/provider/EditProductPage';
 import OrdersListPage from './pages/provider/OrdersListPage';
 import ProviderProfilePage from './pages/provider/ProviderProfilePage';
+import DeliveryPartnersPage from './pages/provider/DeliveryPartnersPage';
 import ProviderLayout from './layouts/ProviderLayout';
 import CustomerLayout from './layouts/CustomerLayout';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -87,6 +88,7 @@ function App() {
                   <Route path="products/add" element={<AddProductPage />} />
                   <Route path="products/edit/:id" element={<EditProductPage />} />
                   <Route path="orders" element={<OrdersListPage />} />
+                  <Route path="delivery-partners" element={<DeliveryPartnersPage />} />
                   <Route path="profile" element={<ProviderProfilePage />} />
                 </Routes>
               </ProviderLayout>

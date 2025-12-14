@@ -10,6 +10,15 @@ export interface DeliveryPartner {
   isAvailable: boolean;
 }
 
+export interface DeliveryPartnerCreateRequest {
+  username: string;
+  email: string;
+  password: string;
+  fullName: string;
+  vehicleType: VehicleType;
+  serviceArea: string;
+}
+
 export interface DeliveryPartnerUpdateRequest {
   fullName: string;
   vehicleType: VehicleType;
@@ -21,4 +30,5 @@ export interface DeliveryPartnerProfile extends DeliveryPartner {
   email?: string;
   phone?: string;
 }
+
 
