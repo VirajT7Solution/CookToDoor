@@ -38,11 +38,9 @@ export const deliveryPartnerApi = {
   uploadProfileImage: async (id: number, file: File): Promise<any> => {
     const formData = new FormData();
     formData.append('file', file);
-    const response = await axiosClient.post(`/api/delivery-partners/${id}/profile-image`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    // Note: Don't set Content-Type header - axios interceptor will handle it
+    // This allows axios to automatically set Content-Type with boundary parameter
+    const response = await axiosClient.post(`/api/delivery-partners/${id}/profile-image`, formData);
     return response.data;
   },
 };

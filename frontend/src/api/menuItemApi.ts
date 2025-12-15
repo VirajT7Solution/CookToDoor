@@ -1,4 +1,4 @@
-﻿import axiosClient from './axiosClient';
+import axiosClient from './axiosClient';
 import type {
   MenuItem,
   CreateMenuItemRequest,
@@ -40,12 +40,8 @@ export const menuItemApi = {
 
     const response = await axiosClient.post<MenuItem>(
       '/api/providers/menu-items',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
+      formData
+      // Note: Don't set Content-Type header - let browser set it with boundary
     );
     return response.data;
   },
@@ -69,12 +65,8 @@ export const menuItemApi = {
 
     const response = await axiosClient.put<MenuItem>(
       `/api/providers/menu-items/${id}`,
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
+      formData
+      // Note: Don't set Content-Type header - let browser set it with boundary
     );
     return response.data;
   },

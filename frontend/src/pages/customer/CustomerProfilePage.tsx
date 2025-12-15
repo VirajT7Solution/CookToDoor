@@ -136,11 +136,9 @@ const CustomerProfilePage: React.FC = () => {
       const formData = new FormData();
       formData.append('file', file);
 
-      await axiosClient.post(`/api/users/${userId}/profile-image`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      // Note: Don't set Content-Type header - axios interceptor will handle it
+      // This allows axios to automatically set Content-Type with boundary parameter
+      await axiosClient.post(`/api/users/${userId}/profile-image`, formData);
 
       await loadProfile();
       alert('Profile image updated successfully!');

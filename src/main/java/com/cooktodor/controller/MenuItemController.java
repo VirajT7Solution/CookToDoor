@@ -193,6 +193,8 @@ public class MenuItemController {
         if (data.getMaxQuantity() != null) item.setMaxQuantity(data.getMaxQuantity());
         MenuItem saved = menuItemRepository.save(item);
         if (image != null && !image.isEmpty()) {
+            // Validate image if provided (same as create endpoint)
+            validateImage(image);
             try {
                 Image savedImage = imageService.saveImage(image, ImageType.PRODUCT, saved.getId());
                 // Reload menu item with image after saving

@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cooktodor.dto.DeliveryPartnerDtos;
 import com.cooktodor.enums.Role;
+import com.cooktodor.exception.BadRequestException;
 import com.cooktodor.exception.ResourceAlreadyExistsException;
 import com.cooktodor.exception.ResourceNotFoundException;
+import jakarta.validation.Valid;
 import com.cooktodor.model.DeliveryPartner;
 import com.cooktodor.model.TiffinProvider;
 import com.cooktodor.model.User;
@@ -83,7 +85,7 @@ public class ProviderDeliveryPartnerController {
      */
     @PostMapping
     @Transactional
-    public ResponseEntity<DeliveryPartnerDtos.Response> create(@RequestBody DeliveryPartnerDtos.CreateRequest req) {
+    public ResponseEntity<DeliveryPartnerDtos.Response> create(@Valid @RequestBody DeliveryPartnerDtos.CreateRequest req) {
         TiffinProvider provider = getCurrentProvider();
         
         // Step 1: Validate user credentials (username and email uniqueness)
@@ -95,9 +97,9 @@ public class ProviderDeliveryPartnerController {
         // Step 3: Create DeliveryPartner linked to the new User
         DeliveryPartner p = new DeliveryPartner();
         p.setUser(user);
-        p.setFullName(req.getFullName());
+        p.setFullName(req.getFullName().trim());
         p.setVehicleType(req.getVehicleType());
-        p.setServiceArea(req.getServiceArea());
+        p.setServiceArea(req.getServiceArea().trim());
         p.setIsAvailable(false); // Default to unavailable
         
         // Provider can create multiple delivery partners - no limit
@@ -109,13 +111,25 @@ public class ProviderDeliveryPartnerController {
      * Validates username and email uniqueness
      */
     private void validateUserCredentials(String username, String email) {
+        // Null safety check (though @NotBlank should prevent this, adding for extra safety)
+        if (username == null || username.trim().isEmpty()) {
+            throw new BadRequestException("Username is required");
+        }
+        if (email == null || email.trim().isEmpty()) {
+            throw new BadRequestException("Email is required");
+        }
+        
+        // Trim whitespace
+        String trimmedUsername = username.trim();
+        String trimmedEmail = email.trim();
+        
         // Check if username already exists
-        if (userRepository.findByUsername(username).isPresent()) {
+        if (userRepository.findByUsername(trimmedUsername).isPresent()) {
             throw new ResourceAlreadyExistsException("Username already exists");
         }
         
         // Check if email already exists
-        if (userRepository.findByEmail(email).isPresent()) {
+        if (userRepository.findByEmail(trimmedEmail).isPresent()) {
             throw new ResourceAlreadyExistsException("Email already exists");
         }
     }
@@ -124,9 +138,14 @@ public class ProviderDeliveryPartnerController {
      * Creates a User account for delivery partner with ROLE_DELIVERY_PARTNER role
      */
     private User createDeliveryPartnerUser(String username, String email, String password) {
+        // Null safety check (though @NotBlank should prevent this, adding for extra safety)
+        if (password == null || password.trim().isEmpty()) {
+            throw new BadRequestException("Password is required");
+        }
+        
         User user = new User();
-        user.setUsername(username);
-        user.setEmail(email);
+        user.setUsername(username.trim());
+        user.setEmail(email.trim());
         user.setPassword(passwordEncoder.encode(password)); // Encrypt password
         user.setRole(Role.ROLE_DELIVERY_PARTNER); // Set role to ROLE_DELIVERY_PARTNER
         
@@ -144,13 +163,13 @@ public class ProviderDeliveryPartnerController {
     @PutMapping("/{id}")
     public ResponseEntity<DeliveryPartnerDtos.Response> update(
             @PathVariable Long id,
-            @RequestBody DeliveryPartnerDtos.UpdateRequest req) {
+            @Valid @RequestBody DeliveryPartnerDtos.UpdateRequest req) {
         TiffinProvider provider = getCurrentProvider();
         
         DeliveryPartner u = new DeliveryPartner();
-        u.setFullName(req.getFullName());
+        u.setFullName(req.getFullName().trim());
         u.setVehicleType(req.getVehicleType());
-        u.setServiceArea(req.getServiceArea());
+        u.setServiceArea(req.getServiceArea().trim());
         u.setIsAvailable(req.getIsAvailable());
         
         DeliveryPartner saved = service.update(id, u, provider.getId());
