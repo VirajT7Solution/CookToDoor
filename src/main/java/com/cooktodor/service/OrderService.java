@@ -18,7 +18,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.cooktodor.dto.OrderDtos;
 import com.cooktodor.enums.OrderStatus;
 import com.cooktodor.exception.BadRequestException;
-import com.cooktodor.exception.ForbiddenException;
 import com.cooktodor.exception.ResourceNotFoundException;
 import com.cooktodor.enums.PaymentMethod;
 import com.cooktodor.enums.PaymentStatus;
@@ -67,6 +66,9 @@ public class OrderService {
 
     @Autowired
     private PayoutService payoutService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -210,6 +212,41 @@ public class OrderService {
         cartItems.forEach(cart -> cart.setIsDeleted(true));
         cartRepository.saveAll(cartItems);
 
+        // Send notifications
+        try {
+            // Notify customer
+            String customerMessage = String.format(
+                "Your order #%d has been placed successfully. Total amount: ₹%.2f. %s",
+                savedOrder.getId(),
+                savedOrder.getTotalAmount(),
+                initialOrderStatus == OrderStatus.PENDING ? 
+                    "Please complete payment to confirm your order." : 
+                    "Your order is confirmed and will be prepared soon."
+            );
+            notificationService.sendOrderCreatedNotification(
+                customer.getUser().getId(),
+                savedOrder.getId(),
+                customerMessage
+            );
+            
+            // Notify provider
+            String providerMessage = String.format(
+                "New order #%d received from %s. Total amount: ₹%.2f. Order status: %s",
+                savedOrder.getId(),
+                customer.getFullName() != null ? customer.getFullName() : "Customer",
+                savedOrder.getTotalAmount(),
+                initialOrderStatus.name()
+            );
+            notificationService.sendOrderCreatedNotification(
+                provider.getUser().getId(),
+                savedOrder.getId(),
+                providerMessage
+            );
+        } catch (Exception e) {
+            logger.error("Failed to send order creation notifications: {}", e.getMessage());
+            // Don't fail order creation if notification fails
+        }
+
         return savedOrder;
     }
 
@@ -266,8 +303,11 @@ public class OrderService {
             throw new BadRequestException("Order status cannot be null");
         }
         
+        // isValidStatusTransition() now correctly enforces that cancellation is only allowed
+        // from PENDING or CONFIRMED status, matching the business logic in cancelOrder() methods
         if (!isValidStatusTransition(currentStatus, newStatus)) {
-            throw new BadRequestException("Invalid status transition from " + currentStatus + " to " + newStatus);
+            throw new BadRequestException("Invalid status transition from " + currentStatus + " to " + newStatus + 
+                (newStatus == OrderStatus.CANCELLED ? ". Order can only be cancelled if it is PENDING or CONFIRMED" : ""));
         }
 
         order.setOrderStatus(newStatus);
@@ -287,7 +327,60 @@ public class OrderService {
             order.setDeliveryTime(LocalDateTime.now());
         }
 
-        return orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
+        
+        // Send notifications based on status change
+        try {
+            String statusMessage = getStatusMessage(newStatus, savedOrder);
+            
+            // Notify customer
+            notificationService.sendOrderStatusNotification(
+                savedOrder.getCustomer().getUser().getId(),
+                orderId,
+                newStatus.name(),
+                statusMessage
+            );
+            
+            // If order is cancelled, also notify provider
+            if (newStatus == OrderStatus.CANCELLED) {
+                String providerMessage = String.format(
+                    "Order #%d has been cancelled.",
+                    orderId
+                );
+                notificationService.sendOrderCancelledNotification(
+                    savedOrder.getProvider().getUser().getId(),
+                    orderId,
+                    providerMessage
+                );
+            }
+        } catch (Exception e) {
+            logger.error("Failed to send order status update notifications: {}", e.getMessage());
+        }
+        
+        return savedOrder;
+    }
+    
+    /**
+     * Helper method to get status-specific message for notifications
+     */
+    private String getStatusMessage(OrderStatus status, Order order) {
+        switch (status) {
+            case CONFIRMED:
+                return String.format("Order #%d has been confirmed and will be prepared soon.", order.getId());
+            case PREPARING:
+                return String.format("Order #%d is being prepared. Estimated delivery time: %s", 
+                    order.getId(),
+                    order.getEstimatedDeliveryTime() != null ? 
+                        order.getEstimatedDeliveryTime().toString() : "Soon");
+            case READY:
+                return String.format("Order #%d is ready for pickup. Delivery partner will be assigned shortly.", order.getId());
+            case OUT_FOR_DELIVERY:
+                return String.format("Order #%d is out for delivery. It will arrive soon!", order.getId());
+            case DELIVERED:
+                return String.format("Order #%d has been delivered successfully. Thank you for your order!", order.getId());
+            default:
+                return String.format("Order #%d status updated to %s", order.getId(), status.name());
+        }
     }
 
     @Transactional
@@ -382,7 +475,49 @@ public class OrderService {
         // Don't change status here - delivery partner will mark as OUT_FOR_DELIVERY when they pickup
         // Status should only change when delivery partner accepts and picks up the order
 
-        return orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
+        
+        // Send assignment notifications
+        try {
+            // Notify delivery partner
+            String deliveryMessage = String.format(
+                "New order #%d has been assigned to you. Please proceed to pickup location.",
+                orderId
+            );
+            notificationService.sendDeliveryPartnerAssignedNotification(
+                deliveryPartner.getUser().getId(),
+                orderId,
+                deliveryMessage
+            );
+            
+            // Notify customer
+            String customerMessage = String.format(
+                "Delivery partner %s has been assigned to your order #%d.",
+                deliveryPartner.getFullName() != null ? deliveryPartner.getFullName() : "assigned",
+                orderId
+            );
+            notificationService.sendDeliveryPartnerAssignedNotification(
+                savedOrder.getCustomer().getUser().getId(),
+                orderId,
+                customerMessage
+            );
+            
+            // Notify provider
+            String providerMessage = String.format(
+                "Delivery partner %s has been assigned to order #%d.",
+                deliveryPartner.getFullName() != null ? deliveryPartner.getFullName() : "assigned",
+                orderId
+            );
+            notificationService.sendDeliveryPartnerAssignedNotification(
+                savedOrder.getProvider().getUser().getId(),
+                orderId,
+                providerMessage
+            );
+        } catch (Exception e) {
+            logger.error("Failed to send delivery partner assignment notifications: {}", e.getMessage());
+        }
+        
+        return savedOrder;
     }
 
     @Transactional
@@ -395,7 +530,36 @@ public class OrderService {
         }
 
         order.setOrderStatus(OrderStatus.CANCELLED);
-        return orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
+        
+        // Send cancellation notifications
+        try {
+            // Notify customer
+            String customerMessage = String.format(
+                "Your order #%d has been cancelled.",
+                orderId
+            );
+            notificationService.sendOrderCancelledNotification(
+                order.getCustomer().getUser().getId(),
+                orderId,
+                customerMessage
+            );
+            
+            // Notify provider
+            String providerMessage = String.format(
+                "Order #%d has been cancelled by customer.",
+                orderId
+            );
+            notificationService.sendOrderCancelledNotification(
+                order.getProvider().getUser().getId(),
+                orderId,
+                providerMessage
+            );
+        } catch (Exception e) {
+            logger.error("Failed to send cancellation notifications: {}", e.getMessage());
+        }
+        
+        return savedOrder;
     }
 
     public List<Order> getAllOrders() {
@@ -405,26 +569,27 @@ public class OrderService {
     }
 
     private boolean isValidStatusTransition(OrderStatus current, OrderStatus next) {
-        // Allow cancellation from any status (handled separately)
+        // Cancellation is only allowed from PENDING or CONFIRMED status
+        // This matches the business logic in cancelOrder() methods
         if (next == OrderStatus.CANCELLED) {
-            return true;
+            return current == OrderStatus.PENDING || current == OrderStatus.CONFIRMED;
         }
 
-        // Valid transitions
+        // Valid transitions (without cancellation)
         switch (current) {
             case PENDING:
-                return next == OrderStatus.CONFIRMED || next == OrderStatus.CANCELLED;
+                return next == OrderStatus.CONFIRMED;
             case CONFIRMED:
-                return next == OrderStatus.PREPARING || next == OrderStatus.CANCELLED;
+                return next == OrderStatus.PREPARING;
             case PREPARING:
-                return next == OrderStatus.READY || next == OrderStatus.CANCELLED;
+                return next == OrderStatus.READY;
             case READY:
-                return next == OrderStatus.OUT_FOR_DELIVERY || next == OrderStatus.CANCELLED;
+                return next == OrderStatus.OUT_FOR_DELIVERY;
             case OUT_FOR_DELIVERY:
                 return next == OrderStatus.DELIVERED;
             case DELIVERED:
             case CANCELLED:
-                return false; // Terminal states
+                return false; // Terminal states - no further transitions allowed
             default:
                 return false;
         }
@@ -571,7 +736,38 @@ public class OrderService {
         // Assign delivery partner (status remains READY until pickup)
         order.setDeliveryPartner(deliveryPartner);
         
-        return orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
+        
+        // Send acceptance notifications
+        try {
+            // Notify customer
+            String customerMessage = String.format(
+                "Delivery partner %s has accepted your order #%d. They will pick it up soon.",
+                deliveryPartner.getFullName() != null ? deliveryPartner.getFullName() : "assigned",
+                orderId
+            );
+            notificationService.sendDeliveryPartnerAssignedNotification(
+                savedOrder.getCustomer().getUser().getId(),
+                orderId,
+                customerMessage
+            );
+            
+            // Notify provider
+            String providerMessage = String.format(
+                "Delivery partner %s has accepted order #%d.",
+                deliveryPartner.getFullName() != null ? deliveryPartner.getFullName() : "assigned",
+                orderId
+            );
+            notificationService.sendDeliveryPartnerAssignedNotification(
+                savedOrder.getProvider().getUser().getId(),
+                orderId,
+                providerMessage
+            );
+        } catch (Exception e) {
+            logger.error("Failed to send order acceptance notifications: {}", e.getMessage());
+        }
+        
+        return savedOrder;
     }
     
     /**
@@ -603,6 +799,23 @@ public class OrderService {
         
         // Send OTP email to customer
         sendOTPEmailToCustomer(savedOrder);
+        
+        // Send pickup notification
+        try {
+            String customerMessage = String.format(
+                "Your order #%d has been picked up and is on its way! OTP: %s",
+                orderId,
+                savedOrder.getOtp()
+            );
+            notificationService.sendOrderStatusNotification(
+                savedOrder.getCustomer().getUser().getId(),
+                orderId,
+                "OUT_FOR_DELIVERY",
+                customerMessage
+            );
+        } catch (Exception e) {
+            logger.error("Failed to send pickup notification: {}", e.getMessage());
+        }
         
         return savedOrder;
     }
@@ -733,7 +946,38 @@ public class OrderService {
             }
         }
         
-        return orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
+        
+        // Send delivery notifications
+        try {
+            // Notify customer
+            String customerMessage = String.format(
+                "Your order #%d has been delivered successfully! Thank you for choosing CookToDoor.",
+                orderId
+            );
+            notificationService.sendOrderStatusNotification(
+                savedOrder.getCustomer().getUser().getId(),
+                orderId,
+                "DELIVERED",
+                customerMessage
+            );
+            
+            // Notify provider
+            String providerMessage = String.format(
+                "Order #%d has been delivered successfully to the customer.",
+                orderId
+            );
+            notificationService.sendOrderStatusNotification(
+                savedOrder.getProvider().getUser().getId(),
+                orderId,
+                "DELIVERED",
+                providerMessage
+            );
+        } catch (Exception e) {
+            logger.error("Failed to send delivery notifications: {}", e.getMessage());
+        }
+        
+        return savedOrder;
     }
 }
 

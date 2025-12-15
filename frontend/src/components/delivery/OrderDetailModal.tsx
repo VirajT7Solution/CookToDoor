@@ -101,7 +101,9 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
       onUpdate();
       onClose();
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to deliver order. Invalid OTP.');
+      const errorMessage = err.response?.data?.message || 'Failed to deliver order. Invalid OTP.';
+      setError(errorMessage);
+      // Keep OTP modal open to show error
     } finally {
       setIsProcessing(false);
     }
@@ -154,7 +156,7 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
                   marginTop: theme.spacing(0.5),
                 }}
               >
-                {order.orderStatus.replace('_', ' ')}
+                {order.orderStatus.replace(/_/g, ' ')}
               </span>
             </div>
             <div style={{ textAlign: 'right' }}>
@@ -362,9 +364,13 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
       {showOtpModal && (
         <OtpVerificationModal
           order={order}
-          onClose={() => setShowOtpModal(false)}
+          onClose={() => {
+            setShowOtpModal(false);
+            setError(''); // Clear error when closing
+          }}
           onVerify={handleDeliver}
           isLoading={isProcessing}
+          error={error}
         />
       )}
     </>

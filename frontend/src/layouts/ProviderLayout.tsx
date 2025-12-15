@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme';
 import { useAuthStore } from '../store/authStore';
+import { useNotification } from '../hooks/useNotification';
 import { providerApi } from '../api/providerApi';
 import Logo from '../components/ui/Logo';
 import Button from '../components/ui/Button';
+import NotificationBell from '../components/ui/NotificationBell';
 
 interface ProviderLayoutProps {
   children: React.ReactNode;
@@ -31,6 +33,7 @@ const ProviderLayout: React.FC<ProviderLayoutProps> = ({ children }) => {
   const { username, logout } = useAuthStore();
   const [businessName, setBusinessName] = useState<string>('');
   const [isMobile, setIsMobile] = useState(false);
+  useNotification(); // Initialize notification system
 
   useEffect(() => {
     const checkMobile = () => {
@@ -121,9 +124,12 @@ const ProviderLayout: React.FC<ProviderLayoutProps> = ({ children }) => {
             </p>
           </div>
         </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: theme.spacing(2) }}>
+          <NotificationBell size="md" />
         <Button variant="ghost" size="sm" onClick={handleLogout}>
           Logout
         </Button>
+        </div>
       </div>
 
       <div style={{ display: 'flex', flex: 1, minHeight: 0, overflow: 'hidden' }}>

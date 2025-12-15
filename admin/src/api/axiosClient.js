@@ -3,7 +3,7 @@ import axios from "axios";
 import { useAuthStore } from "../store/authStore";
 
 const axiosClient = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: "http://localhost:5454",
 });
 
 // Attach token on every request

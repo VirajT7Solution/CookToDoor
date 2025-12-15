@@ -28,9 +28,13 @@ import com.cooktodor.service.PayoutService;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class PaymentService {
+    
+    private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
 
     @Autowired
     private OrderRepository orderRepository;
@@ -46,6 +50,9 @@ public class PaymentService {
 
     @Autowired
     private PayoutService payoutService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     private static final String RAZORPAY_API_BASE = "https://api.razorpay.com/v1";
 
@@ -173,6 +180,35 @@ public class PaymentService {
             }
         } else {
             System.err.println("WARNING: Order " + order.getId() + " has no provider associated");
+        }
+
+        // Send payment success notifications
+        try {
+            // Notify customer
+            String customerMessage = String.format(
+                "Payment of ₹%.2f for order #%d has been successful. Your order is confirmed!",
+                saved.getAmount(),
+                order.getId()
+            );
+            notificationService.sendPaymentNotification(
+                order.getCustomer().getUser().getId(),
+                order.getId(),
+                customerMessage
+            );
+            
+            // Notify provider
+            String providerMessage = String.format(
+                "Payment received for order #%d. Amount: ₹%.2f. Order is now confirmed.",
+                order.getId(),
+                saved.getAmount()
+            );
+            notificationService.sendPaymentNotification(
+                order.getProvider().getUser().getId(),
+                order.getId(),
+                providerMessage
+            );
+        } catch (Exception e) {
+            logger.error("Failed to send payment success notifications: {}", e.getMessage());
         }
 
         return saved;
@@ -317,6 +353,35 @@ public class PaymentService {
             }
         } else {
             System.err.println("WARNING: Order " + order.getId() + " has no provider associated");
+        }
+        
+        // Send payment verification notifications
+        try {
+            // Notify customer
+            String customerMessage = String.format(
+                "Payment of ₹%.2f for order #%d has been verified and confirmed.",
+                payment.getAmount(),
+                orderId
+            );
+            notificationService.sendPaymentNotification(
+                order.getCustomer().getUser().getId(),
+                orderId,
+                customerMessage
+            );
+            
+            // Notify provider
+            String providerMessage = String.format(
+                "Payment verified for order #%d. Amount: ₹%.2f.",
+                orderId,
+                payment.getAmount()
+            );
+            notificationService.sendPaymentNotification(
+                order.getProvider().getUser().getId(),
+                orderId,
+                providerMessage
+            );
+        } catch (Exception e) {
+            logger.error("Failed to send payment verification notifications: {}", e.getMessage());
         }
         
         return order;

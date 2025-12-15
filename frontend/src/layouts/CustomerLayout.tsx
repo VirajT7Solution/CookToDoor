@@ -3,7 +3,9 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useCartStore } from '../store/cartStore';
 import { useTheme } from '../hooks/useTheme';
+import { useNotification } from '../hooks/useNotification';
 import Logo from '../components/ui/Logo';
+import NotificationBell from '../components/ui/NotificationBell';
 import { customerApi } from '../api/customerApi';
 import { userApi } from '../api/userApi';
 import type { Customer, UserProfile } from '../types/customer.types';
@@ -19,6 +21,7 @@ const CustomerLayout: React.FC<CustomerLayoutProps> = ({ children }) => {
   const { logout, userId, username } = useAuth();
   const cartItemCount = useCartStore((state) => state.getCartItemCount());
   const theme = useTheme();
+  useNotification(); // Initialize notification system
   const [isMobile, setIsMobile] = useState(false);
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -201,6 +204,9 @@ const CustomerLayout: React.FC<CustomerLayoutProps> = ({ children }) => {
                 </span>
               )}
             </Link>
+
+            {/* Notifications */}
+            <NotificationBell size="md" />
 
             {/* Cart Icon */}
             <Link

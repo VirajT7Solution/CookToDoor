@@ -58,8 +58,14 @@ public class CustomSecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Collections.singletonList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin"));
-        configuration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin", "Cache-Control"));
+        configuration.setExposedHeaders(Arrays.asList(
+            "Access-Control-Allow-Origin", 
+            "Access-Control-Allow-Credentials",
+            "Content-Type",
+            "Cache-Control",
+            "X-Accel-Buffering"
+        ));
         configuration.setAllowCredentials(false);
         configuration.setMaxAge(3600L);
 

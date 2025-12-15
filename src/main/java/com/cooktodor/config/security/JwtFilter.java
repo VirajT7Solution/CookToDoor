@@ -50,6 +50,12 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = authHeader.substring(7);
 
         try {
+            // First check if token is expired without database query
+            if (jwtUtil.isExpired(token)) {
+                sendError(response, "Token expired");
+                return;
+            }
+            
             String username = jwtUtil.extractUsername(token);
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

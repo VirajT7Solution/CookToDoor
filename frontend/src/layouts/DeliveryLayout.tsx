@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme';
 import { useAuthStore } from '../store/authStore';
+import { useNotification } from '../hooks/useNotification';
 import Logo from '../components/ui/Logo';
 import Button from '../components/ui/Button';
+import NotificationBell from '../components/ui/NotificationBell';
 import { deliveryPartnerApi } from '../api/deliveryPartnerApi';
 
 interface DeliveryLayoutProps {
@@ -28,6 +30,7 @@ const DeliveryLayout: React.FC<DeliveryLayoutProps> = ({ children }) => {
   const { username, logout } = useAuthStore();
   const [fullName, setFullName] = useState<string>('');
   const [isMobile, setIsMobile] = useState(false);
+  useNotification(); // Initialize notification system
 
   useEffect(() => {
     const checkMobile = () => {
@@ -118,9 +121,12 @@ const DeliveryLayout: React.FC<DeliveryLayoutProps> = ({ children }) => {
             </p>
           </div>
         </div>
-        <Button variant="ghost" size="sm" onClick={handleLogout}>
-          Logout
-        </Button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: theme.spacing(2) }}>
+          <NotificationBell size="md" />
+          <Button variant="ghost" size="sm" onClick={handleLogout}>
+            Logout
+          </Button>
+        </div>
       </div>
 
       <div style={{ display: 'flex', flex: 1, minHeight: 0, overflow: 'hidden' }}>
