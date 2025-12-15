@@ -11,7 +11,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   rightIcon?: React.ReactNode;
 }
 
-const Input: React.FC<InputProps> = ({
+const Input = React.forwardRef<HTMLInputElement, InputProps>(({
   label,
   error,
   helperText,
@@ -21,7 +21,7 @@ const Input: React.FC<InputProps> = ({
   className,
   id,
   ...props
-}) => {
+}, ref) => {
   const theme = useTheme();
   const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -69,6 +69,7 @@ const Input: React.FC<InputProps> = ({
           </div>
         )}
         <input
+          ref={ref}
           id={inputId}
           className={cn('input', error && 'input-error')}
           style={{
@@ -126,7 +127,9 @@ const Input: React.FC<InputProps> = ({
       )}
     </div>
   );
-};
+});
+
+Input.displayName = 'Input';
 
 export default Input;
 
