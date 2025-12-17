@@ -16,7 +16,7 @@ interface SignUpFormData {
   password: string;
   confirmPassword: string;
   phone: string;
-  role: 'ROLE_CUSTOMER' | 'ROLE_PROVIDER' | 'ROLE_DELIVERY_PARTNER';
+  role: 'ROLE_CUSTOMER' | 'ROLE_PROVIDER';
 }
 
 const SignUpForm: React.FC = () => {

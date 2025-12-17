@@ -46,7 +46,7 @@
 // src/components/layout/Sidebar.jsx
 import React from "react";
 import { Menu, X } from "lucide-react";
-import logoImage from "../../assets/images/1.png";
+import logoImage from "../../assets/images/CookToDoor.png";
 
 const menuItems = [
   { key: "dashboard", label: "Dashboard" },

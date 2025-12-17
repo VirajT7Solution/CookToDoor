@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { loginApi } from "../api/authApi";
 import { useAuthStore } from "../store/authStore";
 import ForgotPasswordForm from "../components/ForgotPasswordForm";
-import logoImage from "../assets/images/1.png";
+import logoImage from "../assets/images/CookToDoor.png";
 
 export default function Login() {
   const { login } = useAuthStore();

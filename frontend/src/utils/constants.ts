@@ -25,6 +25,5 @@ export const ROLE_DISPLAY_NAMES = {
 export const ROLE_OPTIONS = [
   { value: ROLES.CUSTOMER, label: 'Customer' },
   { value: ROLES.PROVIDER, label: 'Provider' },
-  { value: ROLES.DELIVERY_PARTNER, label: 'Delivery Partner' },
 ] as const;
 

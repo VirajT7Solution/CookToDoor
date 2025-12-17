@@ -1,7 +1,7 @@
 // src/components/layout/Topbar.jsx
 import React from "react";
 import { useAuthStore } from "../../store/authStore";
-import logoImage from "../../assets/images/1.png";
+import logoImage from "../../assets/images/CookToDoor.png";
 
 export default function Topbar({ title }) {
   const { username, logout } = useAuthStore();
